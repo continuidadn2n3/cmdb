@@ -1,0 +1,12 @@
+{# Parcial para renderizar los botones de acción (Editar y Eliminar) en una tabla de mantenedor. #}
+{# Requiere las siguientes variables en el contexto del include: #}
+{# - object: La instancia del modelo a la que se aplican las acciones. #}
+{# - edit_url_name: El nombre de la URL para la vista de edición. #}
+{# - delete_url_name: El nombre de la URL para la vista de eliminación. #}
+{# - delete_confirm_message: (Opcional) Mensaje de confirmación para eliminar. #}
+
+<a href="{% url edit_url_name object.id %}" class="btn-icon btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+<form action="{% url delete_url_name object.id %}" method="post" onsubmit="return confirm('{{ delete_confirm_message|default:'¿Estás seguro de que deseas eliminar este registro?' }}');" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn-icon btn-delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+</form>

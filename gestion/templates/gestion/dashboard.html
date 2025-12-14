@@ -1,0 +1,43 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - CMDB{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'gestion/css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">Menú Principal</h1>
+            <p class="page-subtitle">Seleccione una opción para comenzar a gestionar sus activos.</p>
+        </div>
+
+        <div class="mantenedores-grid">
+            <a href="{% url 'gestion:incidencias' %}" class="mantenedor-card link-con-spinner">
+                <i class="fas fa-clipboard-list mantenedor-icon"></i>
+                <h4 class="mantenedor-title">Gestión de Incidencias</h4>
+            </a>
+
+            <a href="{% url 'gestion:recommendation_test_page' %}" class="mantenedor-card link-con-spinner">
+                <i class="fas fa-lightbulb mantenedor-icon"></i>
+                <h4 class="mantenedor-title">Asistente de Codigos de Cierre</h4>
+            </a>
+
+            <div class="mantenedor-card disabled">
+                <i class="fas fa-sitemap mantenedor-icon"></i>
+                <h4 class="mantenedor-title">Gestión de RCA</h4>
+                <span class="proximamente-tag">(Próximamente)</span>
+            </div>
+
+            <a href="{% url 'gestion:graficos' %}" class="mantenedor-card link-con-spinner">
+                <i class="fas fa-chart-pie mantenedor-icon"></i>
+                <h4 class="mantenedor-title">Dashboard de Gráficos</h4>
+            </a>
+
+            <a href="{% url 'gestion:mantenedores_main' %}" class="mantenedor-card link-con-spinner">
+                <i class="fas fa-book mantenedor-icon"></i>
+                <h4 class="mantenedor-title">Gestión de Mantenedores</h4>
+            </a>
+        </div>
+    </div>
+{% endblock content %}

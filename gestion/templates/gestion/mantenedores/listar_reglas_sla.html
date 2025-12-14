@@ -1,0 +1,41 @@
+{% extends 'gestion/mantenedores/mantenedores_base.html' %}
+
+{% block browser_title %}Gestión de Reglas de SLA{% endblock %}
+{% block page_title %}Gestión de Reglas de SLA{% endblock %}
+
+{% block add_button %}
+    <a href="{% url 'gestion:registrar_regla_sla' %}" class="btn btn-primary">Registrar Regla SLA</a>
+{% endblock %}
+
+{# Para ocultar la sección de filtros, simplemente definimos el bloque vacío. #}
+{% block filter_section %}{% endblock %}
+
+{% block table_content %}
+    <table id="tabla-mantenedor" class="data-table">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 10%;">Acciones</th>
+                <th>Tiempo SLA (Segundos)</th>
+                <th>Tiempo SLA (Horas)</th>
+                <th>Criticidad Aplicación</th>
+                <th>Severidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# La vista debe pasar 'registros' en lugar de 'lista_de_reglas' para ser consistente #}
+            {% for regla in registros %}
+            <tr>
+                <td class="text-center actions">
+                    {% include 'gestion/mantenedores/_mantenedor_actions.html' with object=regla edit_url_name='gestion:editar_regla_sla' delete_url_name='gestion:eliminar_regla_sla' delete_confirm_message='¿Estás seguro de que deseas eliminar esta regla de SLA?' %}
+                </td>
+                <td>{{ regla.tiempo_sla_segundos }}</td>
+                <td>{{ regla.tiempo_sla_horas }}</td>
+                <td>{{ regla.criticidad_aplicacion.desc_criticidad }}</td>
+                <td>{{ regla.severidad.desc_severidad }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No hay reglas de SLA registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock table_content %}

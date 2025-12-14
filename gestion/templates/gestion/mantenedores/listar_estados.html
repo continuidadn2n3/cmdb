@@ -1,0 +1,33 @@
+{% extends 'gestion/mantenedores/mantenedores_base.html' %}
+
+{% block browser_title %}Gestión de Estados{% endblock %}
+{% block page_title %}Gestión de Estados{% endblock %}
+
+{% block add_button %}
+    <a href="{% url 'gestion:registrar_estado' %}" class="btn btn-primary">Agregar Estado</a>
+{% endblock %}
+
+{% block table_content %}
+    <table id="tabla-mantenedor" class="data-table">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 10%;">Acciones</th>
+                <th>Descripción del Estado</th>
+                <th>Uso del Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estado in registros %}
+            <tr>
+                <td class="text-center actions">
+                    {% include 'gestion/mantenedores/_mantenedor_actions.html' with object=estado edit_url_name='gestion:editar_estado' delete_url_name='gestion:eliminar_estado' delete_confirm_message='¿Estás seguro de que deseas eliminar este estado?' %}
+                </td>
+                <td>{{ estado.desc_estado }}</td>
+                <td>{{ estado.uso_estado|default:"N/A" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No hay estados registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock table_content %}

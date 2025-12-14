@@ -1,0 +1,31 @@
+{% extends 'gestion/mantenedores/mantenedores_base.html' %}
+
+{% block browser_title %}Gestión de Grupos Resolutores{% endblock %}
+{% block page_title %}Gestión de Grupos Resolutores{% endblock %}
+
+{% block add_button %}
+    <a href="{% url 'gestion:registrar_grupo' %}" class="btn btn-primary">Agregar Grupo</a>
+{% endblock %}
+
+{% block table_content %}
+    <table id="tabla-mantenedor" class="data-table">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 10%;">Acciones</th>
+                <th>Descripción del Grupo Resolutor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grupo in registros %}
+            <tr>
+                <td class="text-center actions">
+                    {% include 'gestion/mantenedores/_mantenedor_actions.html' with object=grupo edit_url_name='gestion:editar_grupo' delete_url_name='gestion:eliminar_grupo' delete_confirm_message='¿Estás seguro de que deseas eliminar este grupo resolutor?' %}
+                </td>
+                <td>{{ grupo.desc_grupo_resol }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2">No hay grupos resolutores registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock table_content %}

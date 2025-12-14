@@ -1,0 +1,142 @@
+    /* --- ================================== --- */
+    /* ---   CSS PARA PÁGINAS DE LISTADO (TABLAS)   --- */
+    /* --- ================================== --- */
+    /* Este archivo estiliza las páginas que muestran
+   listados en tablas con DataTables, como
+   Aplicaciones y Códigos de Cierre. */
+    /* --- Títulos de Página --- */
+    
+    .page-header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .page-title {
+        color: var(--color-blanco);
+        font-weight: 400;
+        margin-bottom: 25px;
+    }
+    /* --- Contenedor de la Tabla --- */
+    
+    .table-container {
+        background-color: var(--color-tabla-fondo, #2c2f33);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--color-purpura);
+        margin-top: 20px;
+        box-sizing: border-box;
+    }
+    /* --- Estilos Generales de la Tabla --- */
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #e0e0e0;
+    }
+    
+    .data-table thead th {
+        background-color: var(--color-tabla-header-fondo, #1f2833);
+        color: var(--color-purpura);
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 2px solid var(--color-tabla-borde-acento, #c3073f);
+        font-weight: 700;
+    }
+    
+    .data-table tbody td {
+        padding: 10px 15px;
+        border-bottom: 1px solid var(--color-tabla-borde-fila, #454a52);
+        color: #888787;
+    }
+    
+    .data-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: var(--color-tabla-fila-hover, #3a3e44);
+    }
+    /* --- Iconos y Botones en la Tabla --- */
+    
+    .btn-icon {
+        background: none;
+        border: none;
+        color: #e0e0e0;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    
+    .btn-icon.btn-edit:hover {
+        color: var(--color-icono-editar-hover, #00aaff);
+    }
+    
+    .btn-icon.btn-delete:hover {
+        color: var(--color-purpura);
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+    /* --- Controles de DataTables --- */
+    
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        color: var(--color-blanco) !important;
+        margin-bottom: 15px;
+    }
+    
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_filter input {
+        background-color: var(--color-tabla-header-fondo, #1f2833);
+        color: #e0e0e0;
+        border: 1px solid var(--color-tabla-borde-acento, #c3073f);
+        border-radius: 4px;
+        padding: 5px;
+        margin-left: 5px;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        color: var(--color-blanco) !important;
+        border: 1px solid var(--color-tabla-borde-acento, #c3073f);
+        margin: 0 2px;
+        border-radius: 4px;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: var(--color-tabla-borde-acento, #c3073f) !important;
+        color: var(--color-blanco) !important;
+        border-color: var(--color-tabla-borde-acento, #c3073f);
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: var(--color-purpura) !important;
+        color: var(--color-blanco) !important;
+        border-color: var(--color-purpura);
+    }
+    /* --- Botón Principal de la Página --- */
+    
+    .btn.btn-primary {
+        background-color: var(--color-purpura);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    
+    .btn.btn-primary:hover {
+        background-color: var(--color-purpura-oscuro);
+    }
+    
+    table.data-table-loading>tbody {
+        visibility: hidden;
+    }

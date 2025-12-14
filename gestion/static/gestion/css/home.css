@@ -1,0 +1,163 @@
+/* --- ================================== --- */
+
+
+/* ---      CSS PARA LA PÁGINA HOME (LOGIN)     --- */
+
+
+/* --- ================================== --- */
+
+
+/* --- Estructura de la Página de Login --- */
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.main-title {
+    font-size: 2.2em;
+    font-weight: 300;
+    color: var(--color-blanco);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+
+/* --- Estilos Exclusivos para el Login --- */
+
+.login-box {
+    background-color: var(--color-gris-ceramica);
+    color: var(--color-texto-oscuro);
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    border-top: 5px solid var(--color-purpura);
+    animation: fadeIn 0.6s ease-out;
+    /* Usa la animación de base.css */
+}
+
+.login-box h1 {
+    font-weight: 400;
+    color: var(--color-texto-oscuro);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.login-box p {
+    color: var(--color-texto-login-secundario, #5c5357);
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+.login-box .input-group {
+    margin-bottom: 20px;
+}
+
+.login-box .input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: var(--color-texto-oscuro);
+    font-weight: 400;
+}
+
+.login-box .input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: var(--color-texto-oscuro);
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.login-box .input-group input:focus {
+    outline: none;
+    border-color: var(--color-purpura);
+    box-shadow: 0 0 5px var(--color-purpura);
+}
+
+.login-box button {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 1.1em;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.login-box button:hover {
+    background-color: var(--color-purpura-oscuro);
+}
+
+.login-box .login-footer {
+    margin-top: 20px;
+}
+
+.login-box .login-footer a {
+    color: var(--color-texto-login-secundario, #5c5357);
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: color 0.3s;
+}
+
+.login-box .login-footer a:hover {
+    color: var(--color-purpura);
+}
+
+
+/* --- Mensajes de error dentro del login --- */
+
+
+/* Aunque los estilos de mensajes están en base.css,
+   los incluimos aquí por si esta página se usa de
+   forma más aislada y para asegurar consistencia. */
+
+.login-box .messages {
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 0;
+    list-style: none;
+}
+
+.login-box .message {
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 0.9em;
+}
+
+.login-box .message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+
+/* --- Estilos Responsivos para el Login --- */
+
+@media (max-width: 768px) {
+    .login-box {
+        padding: 20px;
+        width: 90%;
+    }
+}

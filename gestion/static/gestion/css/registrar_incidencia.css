@@ -1,0 +1,209 @@
+/* --- ================================== --- */
+
+
+/* ---   CSS PARA REGISTRAR INCIDENCIA      --- */
+
+
+/* --- ================================== --- */
+
+
+/* --- Estilos Generales de la Página --- */
+
+.main-content {
+    /* El contenedor principal se hace más ancho para acomodar 3 columnas */
+    width: 90%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.page-title {
+    color: var(--color-blanco);
+    font-weight: 400;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+
+/* --- Layout Principal del Formulario (3 Columnas) --- */
+
+.registration-form-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Crea 3 columnas de igual tamaño */
+    gap: 30px;
+    /* Espacio entre las columnas */
+    width: 100%;
+}
+
+
+/* --- Columna Individual --- */
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    /* Espacio entre los bloques dentro de una columna */
+}
+
+
+/* --- Bloque de Contenido Dentro de una Columna --- */
+
+.form-block {
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    border-radius: 8px;
+    padding: 25px;
+    height: 100%;
+    /* Para que todos los bloques de una fila tengan la misma altura */
+}
+
+.form-block-title {
+    margin: 0 0 25px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--color-purpura);
+    color: var(--color-blanco);
+    font-weight: 400;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+
+/* --- Estilos para Campos de Formulario (reutilizados) --- */
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.form-group label {
+    /* AJUSTAMOS LA ETIQUETA */
+    flex-basis: 200px;
+    /* Ancho fijo para la etiqueta */
+    flex-shrink: 0;
+    /* Evita que la etiqueta se encoja */
+    font-weight: bold;
+    color: var(--color-texto-secundario);
+    text-align: right;
+    /* Alinea el texto de la etiqueta a la derecha */
+    padding-top: 12px;
+    /* Ajuste vertical para alinear con el texto del input */
+    margin-bottom: 0;
+    /* Ya no es necesario con flexbox y gap */
+    display: block;
+    /* Se mantiene por consistencia */
+}
+
+.form-group label:after {
+    content: " (*)";
+    color: var(--color-purpura);
+    font-weight: bold;
+}
+
+
+/* ASEGURAMOS QUE LOS CAMPOS OCUPEN EL RESTO DEL ESPACIO */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 4px;
+    padding: 12px;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    resize: none;
+    /* <-- AÑADE ESTA LÍNEA */
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-purpura);
+    box-shadow: 0 0 8px rgba(255, 0, 84, 0.5);
+}
+
+
+/* --- Fila de Botones de Acción --- */
+
+.form-actions {
+    grid-column: 1 / -1;
+    /* Hace que la fila ocupe las 3 columnas */
+    display: flex;
+    justify-content: center;
+    /* Centra los botones */
+    gap: 20px;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-purpura);
+}
+
+.btn.btn-primary,
+.form-actions button {
+    background-color: var(--color-purpura);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn.btn-primary:hover,
+.form-actions button:hover {
+    background-color: var(--color-purpura-oscuro);
+}
+
+.btn.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-gris-ceramica);
+    color: var(--color-gris-ceramica);
+    padding: 12px 25px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn.btn-secondary:hover {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border-color: var(--color-purpura);
+}
+
+
+/* ========================================= */
+
+
+/* --- AJUSTE PARA CAMPO BITÁCORA --- */
+
+
+/* ========================================= */
+
+#bitacora {
+    /*
+     * Aumentamos la altura inicial del campo.
+     * El bloque "Bitácora y Notas" es el único en su columna,
+     * así que podemos darle bastante altura sin problema.
+     * ¡Puedes cambiar 350px por el valor que prefieras!
+     */
+    height: 350px;
+    /*
+     * Habilitamos de nuevo el cambio de tamaño, pero solo vertical.
+     * Esto sobreescribe la regla general "resize: none;" que
+     * aplicaste a todos los textareas, pero únicamente para este elemento.
+     */
+    resize: vertical;
+}

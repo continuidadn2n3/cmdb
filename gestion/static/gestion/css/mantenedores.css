@@ -1,0 +1,264 @@
+/* gestion/static/gestion/css/mantenedores.css */
+
+
+/* --- Títulos de Página y Contenedor Principal (Reutilizamos estilos de aplicaciones.css) --- */
+
+.page-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    color: var(--color-blanco);
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+.page-container {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px 25px;
+    box-sizing: border-box;
+}
+
+
+/* --- Contenedor de la Tabla --- */
+
+.table-container {
+    background-color: var(--color-tabla-fondo, #2c2f33);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--color-purpura);
+    margin-top: 20px;
+    box-sizing: border-box;
+}
+
+
+/* --- Estilos Generales de la Tabla (Reutilizamos de aplicaciones.css) --- */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e0e0e0;
+}
+
+.data-table thead th {
+    background-color: var(--color-tabla-header-fondo, #1f2833);
+    color: var(--color-purpura);
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid var(--color-tabla-borde-acento, #c3073f);
+    font-weight: 700;
+}
+
+.data-table tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--color-tabla-borde-fila, #454a52);
+    color: #888787;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--color-tabla-fila-hover, #3a3e44);
+}
+
+
+/* --- Iconos y Botones en la Tabla (Reutilizamos de aplicaciones.css) --- */
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.btn-icon.btn-edit:hover {
+    color: var(--color-icono-editar-hover, #00aaff);
+}
+
+.btn-icon.btn-delete:hover {
+    color: var(--color-purpura);
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+/* --- Controles de DataTables (Reutilizamos de aplicaciones.css) --- */
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    color: var(--color-blanco) !important;
+    margin-bottom: 15px;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background-color: var(--color-tabla-header-fondo, #1f2833);
+    color: #e0e0e0;
+    border: 1px solid var(--color-tabla-borde-acento, #c3073f);
+    border-radius: 4px;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--color-blanco) !important;
+    border: 1px solid var(--color-tabla-borde-acento, #c3073f);
+    margin: 0 2px;
+    border-radius: 4px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--color-tabla-borde-acento, #c3073f) !important;
+    color: var(--color-blanco) !important;
+    border-color: var(--color-tabla-borde-acento, #c3073f);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--color-purpura) !important;
+    color: var(--color-blanco) !important;
+    border-color: var(--color-purpura);
+}
+
+
+/* --- Botones Principales (Reutilizamos de aplicaciones.css) --- */
+
+.btn.btn-primary {
+    background-color: var(--color-purpura);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn.btn-primary:hover {
+    background-color: var(--color-purpura-oscuro);
+}
+
+
+/* --- Estilos para el Formulario de Registro/Edición --- */
+
+.form-container,
+.filter-box {
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    border-radius: 8px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    margin-top: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: var(--color-texto-secundario);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-purpura);
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn.btn-secondary {
+    background-color: transparent;
+    color: var(--color-gris-ceramica);
+    padding: 10px 30px;
+    border: 1px solid var(--color-gris-ceramica);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn.btn-secondary:hover {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border-color: var(--color-purpura);
+}
+
+
+/* --- Estilos para la página principal de mantenedores --- */
+
+.mantenedores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 30px 0;
+    margin: 0 auto;
+    max-width: 1200px;
+    /* Ajusta el ancho máximo para pantallas grandes */
+}
+
+.mantenedor-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    border-radius: 8px;
+    padding: 25px;
+    text-decoration: none;
+    color: var(--color-blanco);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mantenedor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-color: var(--color-purpura-oscuro);
+}
+
+.mantenedor-icon {
+    font-size: 3em;
+    color: var(--color-purpura);
+    margin-bottom: 15px;
+}
+
+.mantenedor-title {
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.2em;
+}

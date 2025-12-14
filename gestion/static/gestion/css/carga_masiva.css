@@ -1,0 +1,188 @@
+/* --- ================================== --- */
+
+
+/* ---   CSS PARA PÁGINAS DE CARGA MASIVA   --- */
+
+
+/* --- ================================== --- */
+
+
+/* Este archivo estiliza las páginas de carga de
+   archivos CSV, tanto para Aplicaciones como para
+   Códigos de Cierre, ya que comparten la misma
+   estructura HTML. */
+
+
+/* --- Títulos de Página --- */
+
+.page-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    color: var(--color-blanco);
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+
+/* --- Contenedor Principal --- */
+
+.table-container {
+    background-color: var(--color-morado);
+    padding: 30px 40px;
+    border-radius: 8px;
+    border: 1px solid var(--color-purpura);
+    width: 80%;
+    max-width: 900px;
+    margin-top: 20px;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+
+/* --- Estilos para Texto de Instrucciones --- */
+
+.table-container p {
+    color: var(--color-texto-secundario);
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+.table-container code {
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-purpura);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95em;
+}
+
+
+/* --- Estilos del Formulario --- */
+
+.form-group {
+    margin-top: 30px;
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: var(--color-gris-ceramica);
+    font-size: 1.2em;
+}
+
+.form-group input[type="file"] {
+    width: 100%;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+    border: 1px dashed var(--color-texto-secundario);
+    border-radius: 4px;
+    padding: 15px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: var(--color-purpura);
+    background-color: #26071750;
+    /* Morado oscuro con transparencia */
+}
+
+
+/* Contenedor para los botones */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    /* Espacio entre los botones */
+    margin-top: 20px;
+}
+
+
+/* Estilo para el botón de "Volver" */
+
+.btn.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-gris-ceramica);
+    color: var(--color-gris-ceramica);
+    padding: 10px 20px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn.btn-secondary:hover {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border-color: var(--color-purpura);
+}
+
+
+/* Estilo para el botón principal de carga */
+
+.btn.btn-primary {
+    background-color: var(--color-purpura);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn.btn-primary:hover {
+    background-color: var(--color-purpura-oscuro);
+}
+
+
+/* --- Separador y Tabla de Errores --- */
+
+.table-container hr {
+    border: 0;
+    height: 1px;
+    background-color: var(--color-purpura);
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+
+/* Reutilizamos los estilos de tabla para consistencia visual */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e0e0e0;
+    margin-top: 20px;
+}
+
+.data-table thead th {
+    background-color: var(--color-tabla-header-fondo, #1f2833);
+    color: var(--color-purpura);
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid var(--color-tabla-borde-acento, #c3073f);
+    font-weight: 700;
+}
+
+.data-table tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--color-tabla-borde-fila, #454a52);
+    vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--color-tabla-fila-hover, #3a3e44);
+}

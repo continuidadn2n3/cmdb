@@ -1,0 +1,258 @@
+/* gestion/static/gestion/css/listado_base.css */
+
+
+/*
+ * Este archivo contiene los estilos base para todas las páginas de listado
+ * que utilizan DataTables. Incluye estilos para la tabla, los filtros,
+ * la paginación y la apariencia general de la página.
+ */
+
+
+/* --- Títulos de Página --- */
+
+.page-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    color: var(--color-blanco);
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+.page-container {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px 25px;
+    box-sizing: border-box;
+}
+
+
+/* --- Contenedor de la Tabla --- */
+
+.table-container {
+    background-color: var(--color-tabla-fondo, #2c2f33);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--color-purpura);
+    margin-top: 20px;
+    box-sizing: border-box;
+}
+
+
+/* --- Estilos Generales de la Tabla --- */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e0e0e0;
+}
+
+.data-table thead th {
+    background-color: var(--color-tabla-header-fondo, #1f2833);
+    color: var(--color-purpura);
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid var(--color-tabla-borde-acento, #c3073f);
+    font-weight: 700;
+}
+
+.data-table tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--color-tabla-borde-fila, #454a52);
+    color: #888787;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--color-tabla-fila-hover, #3a3e44);
+}
+
+
+/* --- Iconos y Botones en la Tabla --- */
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.btn-icon.btn-edit:hover {
+    color: var(--color-icono-editar-hover, #00aaff);
+}
+
+.btn-icon.btn-delete:hover {
+    color: var(--color-purpura);
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+/* --- Controles de DataTables --- */
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    color: var(--color-blanco) !important;
+    margin-bottom: 15px;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background-color: var(--color-tabla-header-fondo, #1f2833);
+    color: #e0e0e0;
+    border: 1px solid var(--color-tabla-borde-acento, #c3073f);
+    border-radius: 4px;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--color-blanco) !important;
+    border: 1px solid var(--color-tabla-borde-acento, #c3073f);
+    margin: 0 2px;
+    border-radius: 4px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--color-tabla-borde-acento, #c3073f) !important;
+    color: var(--color-blanco) !important;
+    border-color: var(--color-tabla-borde-acento, #c3073f);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--color-purpura) !important;
+    color: var(--color-blanco) !important;
+    border-color: var(--color-purpura);
+}
+
+
+/* --- Botón Principal de la Página (Ej: "Añadir Nuevo") --- */
+
+.btn.btn-primary {
+    background-color: var(--color-purpura);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn.btn-primary:hover {
+    background-color: var(--color-purpura-oscuro);
+}
+
+table.data-table-loading>tbody {
+    visibility: hidden;
+}
+
+
+/* --- Estilos para el Cuadro de Filtros --- */
+
+.filter-box {
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    border-radius: 8px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    margin-top: 20px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.filter-header h3 {
+    margin: 0;
+    color: var(--color-blanco);
+    font-weight: 400;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-gris-ceramica);
+    padding: 8px 15px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border-color: var(--color-purpura);
+}
+
+#filter-container {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid var(--color-purpura);
+    display: none;
+    /* Oculto por defecto */
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: var(--color-texto-secundario);
+}
+
+.filter-group input[type="text"],
+.filter-group input[type="date"],
+.filter-group select {
+    width: 100%;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: var(--color-purpura);
+}
+
+.filter-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn.filter-btn {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    padding: 10px 30px;
+    border: none;
+    cursor: pointer;
+}

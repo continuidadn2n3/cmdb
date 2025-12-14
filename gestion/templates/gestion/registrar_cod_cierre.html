@@ -1,0 +1,106 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}
+{% if codigo_cierre %}
+Editar Código de Cierre - CMDB
+{% else %}
+Registrar Código de Cierre - CMDB
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/registrar_cod_cierre.css' %}">{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block main_class %}main-content-centered{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        {% if codigo_cierre %}
+        Editar Código de Cierre
+        {% else %}
+        Registrar Nuevo Código de Cierre
+        {% endif %}
+    </h1>
+</div>
+
+<div class="table-container">
+
+    <form method="post"
+        action="{% if codigo_cierre %}{% url 'gestion:editar_cod_cierre' codigo_cierre.id %}{% else %}{% url 'gestion:registrar_cod_cierre' %}{% endif %}">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <h4>Por favor corrige los siguientes errores:</h4>
+            <ul>
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="simple-form-layout">
+
+            <div class="form-group">
+                <label for="{{ form.aplicacion.id_for_label }}">{{ form.aplicacion.label }}</label>
+                {{ form.aplicacion }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.cod_cierre.id_for_label }}">{{ form.cod_cierre.label }}</label>
+                {{ form.cod_cierre }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.desc_cod_cierre.id_for_label }}">{{ form.desc_cod_cierre.label }}</label>
+                {{ form.desc_cod_cierre }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.causa_cierre.id_for_label }}">{{ form.causa_cierre.label }}</label>
+                {{ form.causa_cierre }}
+            </div>
+
+        </div>
+
+        <div class="form-actions" style="justify-content: center; margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            {% if not codigo_cierre %}
+            <a href="{% url 'gestion:carga_masiva_cod_cierre' %}" class="btn btn-secondary link-con-spinner">Carga
+                Masiva</a>
+            {% endif %}
+            <a href="{% url 'gestion:codigos_cierre' %}" class="btn btn-secondary link-con-spinner">Cancelar</a>
+        </div>
+
+    </form>
+
+    {# --- INICIO DE LA NUEVA SECCIÓN PARA MOSTRAR ÚLTIMOS CÓDIGOS --- #}
+    {# Este bloque solo se renderiza si estamos creando un código nuevo #}
+    {% if not codigo_cierre %}
+    <div id="ultimos-codigos-container" style="display: none; margin-top: 30px;">
+        <h3>Últimos 5 Códigos de Cierre para esta Aplicación</h3>
+        <ul id="lista-ultimos-codigos">
+        </ul>
+    </div>
+    {% endif %}
+    {# --- FIN DE LA NUEVA SECCIÓN --- #}
+
+</div>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'gestion/js/registrar_incidencia.js' %}"></script>
+{% endblock extra_scripts %}

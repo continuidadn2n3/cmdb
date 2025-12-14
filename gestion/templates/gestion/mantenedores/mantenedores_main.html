@@ -1,0 +1,35 @@
+{% extends 'gestion/base.html' %} {% load static %} {% block title %}Gestión de Catálogos - CMDB{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/mantenedores.css' %}">{% endblock %} {% block extra_nav_buttons %} {% include 'gestion/_extra_nav_buttons.html' %} {% endblock extra_nav_buttons %} {% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Catálogos</h1>
+    </div>
+
+    <div class="mantenedores-grid">
+        <a href="{% url 'gestion:listar_usuarios' %}" class="mantenedor-card">
+            <i class="fas fa-users mantenedor-icon"></i>
+            <h3 class="mantenedor-title">Usuarios</h3>
+        </a>
+        <a href="{% url 'gestion:listar_estados' %}" class="mantenedor-card">
+            <i class="fas fa-toggle-on mantenedor-icon"></i>
+            <h3 class="mantenedor-title">Estados</h3>
+        </a>
+        <a href="{% url 'gestion:listar_grupos' %}" class="mantenedor-card">
+            <i class="fas fa-users-cog mantenedor-icon"></i>
+            <h3 class="mantenedor-title">Grupos Resolutores</h3>
+        </a>
+        <a href="{% url 'gestion:listar_reglas_sla' %}" class="mantenedor-card">
+            <i class="fas fa-file-contract mantenedor-icon"></i>
+            <h3 class="mantenedor-title">Reglas SLA</h3>
+        </a>
+        <a href="{% url 'gestion:listar_dias_feriados' %}" class="mantenedor-card">
+            <i class="fas fa-calendar-times mantenedor-icon"></i>
+            <h3 class="mantenedor-title">Días Feriados</h3>
+        </a>
+        <a href="{% url 'gestion:listar_horarios_laborales' %}" class="mantenedor-card">
+            <i class="fas fa-clock mantenedor-icon"></i>
+            <h3 class="mantenedor-title">Horarios Laborales</h3>
+        </a>
+    </div>
+</div>
+{% endblock content %}

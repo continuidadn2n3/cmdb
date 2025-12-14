@@ -1,0 +1,427 @@
+/* --- ================================== --- */
+
+
+/* ---        CSS BASE DEL PROYECTO       --- */
+
+
+/* --- ================================== --- */
+
+
+/* Este archivo contiene los estilos compartidos
+   en todo el sitio, definidos en base.html */
+
+
+/* ---        PALETA DE COLORES         --- */
+
+
+/* Variables globales para mantener consistencia. */
+
+
+/* --- ================================== --- */
+
+:root {
+    --color-morado-oscuro: #260717;
+    --color-morado: #480E2A;
+    --color-purpura: #FF0054;
+    --color-blanco: #FFFFFF;
+    --color-gris-ceramica: #E3E2DA;
+    --color-texto-oscuro: #260717;
+    --color-texto-secundario: #bcaec6;
+    --color-purpura-oscuro: #d10046;
+    --color-logout: #e74c3c;
+    --color-logout-hover: #c0392b;
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---        ESTILOS GLOBALES          --- */
+
+
+/* Estilos para el cuerpo, fuentes y animaciones. */
+
+
+/* --- ================================== --- */
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Lato', sans-serif;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---        ESTILOS DEL NAVBAR          --- */
+
+
+/* Componente global definido en base.html. */
+
+
+/* --- ================================== --- */
+
+.navbar {
+    position: fixed;
+    /* Fija el elemento a la ventana */
+    top: 0;
+    /* Lo posiciona en la parte superior */
+    left: 0;
+    /* Lo posiciona a la izquierda */
+    z-index: 1000;
+    /* Asegura que esté por encima de otros contenidos */
+    width: 100%;
+    background-color: var(--color-morado);
+    padding: 15px 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom: 3px solid var(--color-purpura);
+}
+
+.navbar-brand {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--color-blanco);
+    letter-spacing: 2px;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar-logout {
+    background-color: var(--color-logout);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.navbar-logout:hover {
+    background-color: var(--color-logout-hover);
+}
+
+.navbar-link {
+    color: var(--color-blanco);
+    text-decoration: none;
+    font-weight: 400;
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---    ESTILOS DEL CONTENIDO PRINCIPAL --- */
+
+
+/* Estilos para el contenedor principal y botones genéricos. */
+
+
+/* --- ================================== --- */
+
+
+/* --- ESTILOS DEL CONTENIDO PRINCIPAL --- */
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px;
+    padding-top: 120px;
+    /* <-- AÑADE ESTA LÍNEA */
+    text-align: center;
+}
+
+.btn {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border: none;
+    padding: 20px 40px;
+    border-radius: 4px;
+    font-size: 1.2em;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 200px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: var(--color-purpura-oscuro);
+    transform: translateY(-3px);
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---        ESTILOS DEL FOOTER          --- */
+
+
+/* Componente global definido en base.html. */
+
+
+/* --- ================================== --- */
+
+.footer {
+    width: 100%;
+    background-color: var(--color-morado);
+    color: var(--color-blanco);
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 0.9em;
+}
+
+.footer p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---        ESTILOS DE MENSAJES       --- */
+
+
+/* Estilos para el sistema de mensajes de Django. */
+
+
+/* --- ================================== --- */
+
+.messages {
+    margin: 15px auto;
+    width: 80%;
+    max-width: 1200px;
+    list-style: none;
+    padding: 0;
+}
+
+.message {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 400;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---        ESTILOS RESPONSIVOS       --- */
+
+
+/* Ajustes para los componentes base en diferentes pantallas. */
+
+
+/* --- ================================== --- */
+
+@media (max-width: 768px) {
+    /* --- Navbar --- */
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+    .navbar-links {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 15px;
+        gap: 10px;
+    }
+    .navbar-logout,
+    .navbar-link {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    /* --- Contenido Principal --- */
+    .main-content {
+        padding: 20px;
+    }
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---      MODIFICADOR DE LAYOUT         --- */
+
+
+/* --- ================================== --- */
+
+
+/* Esta clase se usa en páginas con poco contenido (como formularios)
+   para centrarlas verticalmente en el espacio disponible. */
+
+.main-content.main-content-centered {
+    justify-content: center;
+}
+
+
+/* --- ================================== --- */
+
+
+/* ---        ESTILOS DEL SPINNER         --- */
+
+
+/* --- ================================== --- */
+
+
+/* Contenedor que cubre toda la pantalla */
+
+.spinner-overlay {
+    position: fixed;
+    /* Lo fija a la ventana */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(38, 7, 23, 0.85);
+    /* Fondo semitransparente oscuro */
+    display: none;
+    /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* Para alinear el texto debajo */
+    z-index: 2000;
+    /* Asegura que esté por encima de todo */
+    font-family: 'Montserrat', sans-serif;
+    /* Usamos la fuente que sugeriste */
+}
+
+
+/* Cuando el spinner está activo, lo mostramos como un contenedor flex */
+
+.spinner-overlay.is-active {
+    display: flex;
+}
+
+
+/* Contenedor de las pelotas animadas */
+
+.spinner-cargando {
+    width: 120px;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+
+/* Estilo de cada pelota */
+
+.pelota {
+    width: 30px;
+    height: 30px;
+    background-color: var(--color-purpura);
+    /* Usamos el color de tu paleta */
+    border-radius: 50%;
+    animation: salto 0.5s alternate infinite;
+}
+
+
+/* Retrasos en la animación para un efecto escalonado */
+
+.pelota:nth-child(2) {
+    animation-delay: .18s;
+}
+
+.pelota:nth-child(3) {
+    animation-delay: .37s;
+}
+
+
+/* Texto "Cargando..." */
+
+.spinner-texto {
+    color: var(--color-blanco);
+    padding-top: 25px;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+
+/* Animación del salto */
+
+@keyframes salto {
+    from {
+        transform: scaleX(1.25);
+    }
+    to {
+        transform: translateY(-50px) scaleX(1);
+    }
+}

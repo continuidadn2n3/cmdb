@@ -1,0 +1,28 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Visor de Logs - CMDB{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'gestion/css/view_logs.css' %}">{% endblock %}
+
+{# Este bloque inyectará los botones en el navbar de base.html #}
+{% block extra_nav_buttons %}
+    {% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+
+    <h1>Visor de Logs</h1>
+
+    <div class="action-buttons-container" style="margin-bottom: 20px;">
+        <a href="{% url 'gestion:download_log' %}" class="btn btn-secondary">
+            ⬇️ Descargar Log Completo
+        </a>
+    </div>
+    
+    <div class="log-container">
+        <p>Mostrando las últimas 800 líneas:</p>
+        <pre class="log-content">{{ log_content }}</pre>
+    </div>
+
+{% endblock content %}

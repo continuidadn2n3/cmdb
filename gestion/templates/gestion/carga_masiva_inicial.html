@@ -1,0 +1,82 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Carga Masiva Inicial de Incidencias - CMDB{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/carga_masiva.css' %}">
+{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-header">
+        <h1 class="page-title">Carga Masiva Inicial de Incidencias</h1>
+    </div>
+
+    <div class="table-container">
+        <p>Seleccione un archivo de texto (<strong>.json</strong>)para realizar la carga masiva inicial de incidencias
+            en el sistema.</p>
+
+        <form method="post" enctype="multipart/form-data" action="{% url 'gestion:carga_masiva_inicial' %}"
+            class="upload-form">
+            {% csrf_token %}
+            <div class="form-group-file">
+                <input type="file" name="incidencias_file" id="incidencias_file" class="file-input" required>
+                <label for="incidencias_file" class="file-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Seleccionar archivo...</span>
+                </label>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary link-con-spinner">
+                    <i class="fas fa-upload"></i> Cargar Incidencias
+                </button>
+                <a href="{% url 'gestion:incidencias' %}" class="btn btn-secondary link-con-spinner">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+
+        {% if stats %}
+        <hr>
+        <h3>Resumen de la Carga</h3>
+        <div class="stats-summary"
+            style="padding: 15px; background-color: #f8f9fa; border-radius: 5px; border: 1px solid #dee2e6;">
+            <p><strong>Total de registros en el archivo:</strong> {{ stats.total }}</p>
+            <p style="color: #28a745;"><strong>Creados con éxito:</strong> {{ stats.created }}</p>
+            <p style="color: #17a2b8;"><strong>Omitidos (Ya existían):</strong> {{ stats.skipped }}</p>
+            <p style="color: #dc3545;"><strong>Con errores:</strong> {{ stats.failed }}</p>
+        </div>
+        {% endif %}
+
+        {% if errors %}
+        <div class="errors-container" style="margin-top: 20px;">
+            <h3 style="color: #dc3545;">Detalle de Errores ({{ errors|length }})</h3>
+            <p>Los siguientes registros no pudieron ser procesados:</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Datos / Incidencia</th>
+                        <th>Error Encontrado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for error in errors %}
+                    <tr>
+                        <td>{{ error.line }}</td>
+                        <td>{{ error.row_data }}</td>
+                        <td style="color: #d9534f;">{{ error.error }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

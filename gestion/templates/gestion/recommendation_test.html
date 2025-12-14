@@ -1,0 +1,359 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Asistente de Código de Cierre (IA){% endblock %}
+
+{% block extra_css %}
+<style>
+    /* --- Utilities --- */
+    .d-none { display: none !important; }
+    
+    /* --- Layout Grid --- */
+    .container-custom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+    .row-custom {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -15px;
+    }
+    .col-half {
+        flex: 1;
+        min-width: 300px; /* Responsive: stack on small screens */
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    /* --- Cards --- */
+    .card-custom {
+        background-color: rgba(255, 255, 255, 0.05); /* Slightly lighter than body */
+        border: 1px solid var(--color-purpura);
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .card-title {
+        color: var(--color-purpura);
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    /* --- Forms --- */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--color-blanco);
+        font-weight: bold;
+    }
+    .form-control-custom {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #666;
+        background-color: rgba(0, 0, 0, 0.2);
+        color: #fff;
+        font-family: inherit;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+    .form-control-custom:focus {
+        outline: none;
+        border-color: var(--color-purpura);
+        box-shadow: 0 0 0 2px rgba(255, 0, 84, 0.25);
+    }
+
+    /* --- Buttons --- */
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    /* Override base btn slightly for specific needs */
+    .btn-sm-custom {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        min-width: auto;
+    }
+    .btn-full {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .btn-icon-only {
+        min-width: auto;
+        padding: 5px 10px;
+        background: transparent;
+        border: 1px solid var(--color-purpura);
+        font-size: 0.8em;
+    }
+    .btn-icon-only:hover {
+        background: var(--color-purpura);
+    }
+
+    /* --- Results & Badges --- */
+    .badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+    .bg-success { background-color: #198754; }
+    .bg-warning { background-color: #ffc107; color: #000; }
+    .bg-secondary { background-color: #6c757d; }
+
+    #resultado-container {
+        min-height: 200px;
+    }
+    .suggestion-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-left: 5px solid transparent;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 4px;
+        transition: transform 0.2s;
+    }
+    .suggestion-card:hover {
+        transform: translateX(5px);
+    }
+    .suggestion-card.top-match {
+        border-left-color: #198754;
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+    .suggestion-card.medium-match {
+        border-left-color: #ffc107;
+    }
+    .suggestion-card.low-match {
+        border-left-color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-custom mt-4">
+    <div class="header-actions">
+        <h2>Asistente de Código de Cierre (IA)</h2>
+        <button id="btn-entrenar" class="btn btn-sm-custom">
+            <i class="fas fa-sync-alt"></i> Actualizar Conocimiento IA
+        </button>
+    </div>
+
+    <p style="text-align: center; color: var(--color-texto-secundario); margin-bottom: 2rem;">
+        Introduce los detalles de la incidencia para recibir las 3 mejores sugerencias basadas en similitud.
+    </p>
+
+    <!-- Token CSRF oculto para uso genérico si fuera necesario -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    <div class="row-custom">
+        <div class="col-half">
+            <!-- FORMULARIO -->
+            <div class="card-custom">
+                <div class="form-group">
+                    <label for="aplicativo" class="form-label">Aplicativo afectado</label>
+                    <select id="aplicativo" class="form-control-custom">
+                        <option value="">Seleccione un aplicativo...</option>
+                        {% for app in aplicaciones %}
+                            <option value="{{ app.id }}">{{ app.nombre_aplicacion }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="causa" class="form-label">Causa del problema</label>
+                    <textarea id="causa" class="form-control-custom" rows="3" placeholder="Descripción del reporte de usuario..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="analisis" class="form-label">Análisis Técnico</label>
+                    <textarea id="analisis" class="form-control-custom" rows="4" placeholder="Detalles técnicos de la solución..."></textarea>
+                </div>
+                <button id="btn-sugerencia" class="btn btn-full">
+                    <i class="fas fa-magic"></i> Obtener Sugerencias
+                </button>
+            </div>
+        </div>
+
+        <div class="col-half">
+            <!-- RESULTADOS -->
+            <div id="spinner" class="d-none" style="text-align:center; margin-top:2rem;">
+                <div class="spinner-cargando" style="margin: 0 auto;">
+                    <div class="pelota"></div>
+                    <div class="pelota"></div>
+                    <div class="pelota"></div>
+                </div>
+                <p class="spinner-texto" style="font-size:1rem; padding-top:10px;">Analizando similitudes...</p>
+            </div>
+
+            <div id="resultado-container" class="mt-3">
+                <!-- Aquí se inyectarán las sugerencias -->
+                <div style="text-align:center; padding: 2rem; border: 1px dashed #666; border-radius: 8px; color: #aaa;">
+                    Los resultados aparecerán aquí.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Entrenamiento -->
+<div id="training-spinner" class="spinner-overlay">
+    <div class="spinner-cargando">
+        <div class="pelota"></div>
+        <div class="pelota"></div>
+        <div class="pelota"></div>
+    </div>
+    <span class="spinner-texto">Re-entrenando Modelo IA...</span>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // --- Lógica de Sugerencias ---
+        document.getElementById('btn-sugerencia').addEventListener('click', function() {
+            const causa = document.getElementById('causa').value;
+            const analisis = document.getElementById('analisis').value;
+            const aplicativoId = document.getElementById('aplicativo').value;
+            const resultadoContainer = document.getElementById('resultado-container');
+            const spinner = document.getElementById('spinner');
+
+            const textoCompleto = (causa + " " + analisis).trim();
+
+            if (textoCompleto === '') {
+                if(typeof Swal !== 'undefined') Swal.fire('Faltan datos', 'Por favor, introduce la causa y/o el análisis.', 'warning');
+                else alert('Por favor, introduce la causa y/o el análisis.');
+                return;
+            }
+
+            // Mostrar spinner propio
+            spinner.classList.remove('d-none');
+            resultadoContainer.innerHTML = ''; 
+
+            fetch('/api/gestion/recommend-closure-code/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ 
+                    description: textoCompleto,
+                    application_id: aplicativoId ? parseInt(aplicativoId) : null
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                spinner.classList.add('d-none');
+                
+                if (data.status === 'success' && data.sugerencias) {
+                    let html = '<h3 class="card-title">Top Sugerencias</h3>';
+                    
+                    data.sugerencias.forEach((sug, index) => {
+                        // Determinar clase de estilo según score
+                        let matchClass = 'low-match';
+                        let badgeClass = 'bg-secondary';
+                        
+                        if (sug.raw_score > 0.5) {
+                            matchClass = 'top-match';
+                            badgeClass = 'bg-success';
+                        } else if (sug.raw_score > 0.2) {
+                            matchClass = 'medium-match';
+                            badgeClass = 'bg-warning';
+                        }
+
+                        html += `
+                        <div class="suggestion-card ${matchClass}">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <h4 style="margin:0; color:var(--color-blanco);">${sug.codigo_cierre} <small style="font-size:0.8em; color:#ccc;">#${sug.id}</small></h4>
+                                <span class="badge ${badgeClass}">${sug.confianza}</span>
+                            </div>
+                            <p style="margin: 0.5rem 0; font-size: 0.9em; color: #ddd;">${sug.descripcion || "Sin descripción"}</p>
+                            <div style="text-align:right; margin-top:10px;">
+                                <button class="btn btn-icon-only copy-code-btn" data-code="${sug.codigo_cierre}">
+                                    <i class="far fa-copy"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    resultadoContainer.innerHTML = html;
+
+                    // Activar botones de copiar
+                    document.querySelectorAll('.copy-code-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const button = e.target.closest('button');
+                            navigator.clipboard.writeText(button.dataset.code);
+                            
+                            const originalHtml = button.innerHTML;
+                            button.innerHTML = '<i class="fas fa-check"></i> Copiado';
+                            button.style.borderColor = '#198754';
+                            button.style.backgroundColor = 'rgba(25, 135, 84, 0.2)';
+                            
+                            setTimeout(() => {
+                                button.innerHTML = originalHtml;
+                                button.style.borderColor = '';
+                                button.style.backgroundColor = '';
+                            }, 1500);
+                        });
+                    });
+
+                } else {
+                    resultadoContainer.innerHTML = `<div style="padding:1rem; border:1px solid #ffc107; color:#ffc107; border-radius:4px;">No se encontraron sugerencias. ${data.message || ''}</div>`;
+                }
+            })
+            .catch(error => {
+                spinner.classList.add('d-none');
+                console.error('Error:', error);
+                resultadoContainer.innerHTML = `<div style="padding:1rem; border:1px solid #dc3545; color:#dc3545; border-radius:4px;">Error de conexión con el servidor IA.</div>`;
+            });
+        });
+
+        // --- Lógica de Re-Entrenamiento ---
+        document.getElementById('btn-entrenar').addEventListener('click', function() {
+            Swal.fire({
+                title: '¿Re-entrenar Modelo IA?',
+                text: "Esto procesará todos los códigos guardados en la base de datos.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#480E2A', /* --color-morado */
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, entrenar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const trainSpinner = document.getElementById('training-spinner');
+                    trainSpinner.classList.add('is-active'); // Usar clase de base.css
+
+                    fetch('/api/gestion/train-model/', {
+                        method: 'POST',
+                        headers: { 'X-CSRFToken': csrfToken }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        trainSpinner.classList.remove('is-active');
+                        if (data.status === 'success') {
+                            Swal.fire('¡Éxito!', data.message, 'success');
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        trainSpinner.classList.remove('is-active');
+                        Swal.fire('Error', 'Error técnico al intentar entrenar el modelo.', 'error');
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

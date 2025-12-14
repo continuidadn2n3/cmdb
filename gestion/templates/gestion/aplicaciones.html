@@ -1,0 +1,138 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Mantenedor de Aplicaciones - CMDB{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/aplicaciones.css' %}">{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="page-container" data-total-registros="{{ total_registros|default:0 }}">
+
+    <div class="page-header">
+        <h1 class="page-title">Listado de Aplicaciones</h1>
+        <a href="{% url 'gestion:registrar_aplicacion' %}" class="btn btn-primary">Registrar Aplicación</a>
+    </div>
+
+    <form method="get" action="" class="form-con-spinner">
+        <div class="filter-box">
+            <div class="filter-header">
+                <h3>Filtros de Búsqueda</h3>
+                <button id="toggle-filters-btn" class="btn-secondary" type="button">Mostrar Filtros</button>
+            </div>
+            <div id="filter-container" style="display: none;">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="nombre_app">Nombre Aplicación:</label>
+                        <input type="text" id="nombre_app" name="nombre_app"
+                            value="{{ request.GET.nombre_app|default:'' }}" placeholder="Buscar por nombre...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="codigo_app">Código Aplicación:</label>
+                        <input type="text" id="codigo_app" name="codigo_app"
+                            value="{{ request.GET.codigo_app|default:'' }}" placeholder="Buscar por código...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="bloque">Bloque:</label>
+                        <select id="bloque" name="bloque">
+                            <option value="">Todos</option>
+                            {% for b in todos_los_bloques %}
+                            {% with b_id_str=b.id|stringformat:"s" %}
+                            <option value="{{ b.id }}" {% if request.GET.bloque == b_id_str %}selected{% endif %}>
+                                {{ b.desc_bloque }}
+                            </option>
+                            {% endwith %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="criticidad">Criticidad:</label>
+                        <select id="criticidad" name="criticidad">
+                            <option value="">Todas</option>
+                            {% for c in todas_las_criticidades %}
+                            {% with c_id_str=c.id|stringformat:"s" %}
+                            <option value="{{ c.id }}" {% if request.GET.criticidad == c_id_str %}selected{% endif %}>
+                                {{ c.desc_criticidad }}
+                            </option>
+                            {% endwith %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="estado">Estado:</label>
+                        <select id="estado" name="estado">
+                            <option value="">Todos</option>
+                            {% for e in todos_los_estados %}
+                            {% with e_id_str=e.id|stringformat:"s" %}
+                            <option value="{{ e.id }}" {% if request.GET.estado == e_id_str %}selected{% endif %}>
+                                {{ e.desc_estado }}
+                            </option>
+                            {% endwith %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn filter-btn">Filtrar</button>
+                    <a href="{% url 'gestion:exportar_aplicaciones_csv' %}?{{ request.GET.urlencode }}"
+                        class="btn filter-btn btn-success" target="_blank">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </a>
+                    <a href="{% url 'gestion:aplicaciones' %}" class="btn filter-btn">Limpiar Filtros</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="table-container">
+        <table id="tabla-aplicaciones" class="data-table">
+            <thead>
+                <tr>
+                    <th>Eliminar</th>
+                    <th>Editar</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Bloque</th>
+                    <th>Criticidad</th>
+                    <th>Estado</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in lista_de_aplicaciones %}
+                <tr>
+                    <td class="text-center">
+                        <form action="{% url 'gestion:eliminar_aplicacion' app.id %}" method="post"
+                            onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta aplicación?');"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-icon btn-delete" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'gestion:editar_aplicacion' app.id %}" class="btn-icon btn-edit" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                    <td>{{ app.cod_aplicacion }}</td>
+                    <td>{{ app.nombre_aplicacion }}</td>
+                    <td>{{ app.bloque.desc_bloque }}</td>
+                    <td>{{ app.criticidad.desc_criticidad }}</td>
+                    <td>{{ app.estado.desc_estado }}</td>
+                    <td>{{ app.desc_aplicacion|truncatechars:50 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'gestion/js/aplicaciones.js' %}"></script>
+{% endblock extra_scripts %}

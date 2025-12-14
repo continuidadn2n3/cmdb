@@ -1,0 +1,74 @@
+# Entorno Virtual
+venv/
+env/
+.venv/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Archivos de base de datos local
+*.sqlite3
+db.sqlite3
+
+# Archivos de entorno
+# Ignora todos los archivos .env, pero permite que .env.example se suba.
+.env*
+!.env.example
+
+# Archivos de IDEs
+.vscode/
+.idea/
+
+# Archivos de registro
+*.log
+*.log.*
+.__logs.lock
+
+# Archivos de medios (subidos por usuarios)
+media/
+
+# Directorio de archivos estáticos para producción (generado por collectstatic)
+staticfiles/
+static_root/
+
+# Archivos de distribución y empaquetado
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Archivos de sistema operativo (Windows/Mac)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Reportes de pruebas y cobertura de código
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Configuración local de Docker (opcional, si existiera)
+docker-compose.override.yml
+
+# Archivos temporales de backup de editores
+*~
+*.swp
+*.swo
+
+
+# Documentación Privada
+reglas-cmdb.md
+
+# Modelos ML (Binarios grandes)
+*.joblib

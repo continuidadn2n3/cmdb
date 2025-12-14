@@ -1,0 +1,103 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Códigos de Cierre - CMDB{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/cod_cierre.css' %}">{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="page-container" data-total-registros="{{ total_registros|default:0 }}">
+
+    <div class="page-header">
+        <h1 class="page-title">Listado de Códigos de Cierre</h1>
+        <a href="{% url 'gestion:registrar_cod_cierre' %}" class="btn btn-primary link-con-spinner">Registrar Código de
+            Cierre</a>
+    </div>
+
+    <form method="get" action="">
+        <div class="filter-box">
+            <div class="filter-header">
+                <h3>Filtros de Búsqueda</h3>
+                <button id="toggle-filters-btn" class="btn-secondary" type="button">Mostrar Filtros</button>
+            </div>
+            <div id="filter-container" style="display: none;">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="codigo_cierre">Código de Cierre:</label>
+                        <input type="text" id="codigo_cierre" name="codigo_cierre"
+                            value="{{ request.GET.codigo_cierre|default:'' }}" placeholder="Buscar por código...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="aplicacion">Aplicación:</label>
+                        <select id="aplicacion" name="aplicacion">
+                            <option value="">Todas</option>
+                            {% for app in todas_las_aplicaciones %}
+                            <option value="{{ app.id }}" {% if request.GET.aplicacion == app.id|stringformat:"s" %}selected{% endif %}>
+                                {{ app.nombre_aplicacion }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn filter-btn">Filtrar</button>
+                    <a href="{% url 'gestion:exportar_codigos_cierre_csv' %}?{{ request.GET.urlencode }}"
+                        class="btn filter-btn btn-success" target="_blank">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </a>
+                    <a href="{% url 'gestion:codigos_cierre' %}" class="btn filter-btn">Limpiar Filtros</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="table-container">
+        <table id="tabla-codigos-cierre" class="data-table data-table-loading">
+            <thead>
+                <tr>
+                    <th>Eliminar</th>
+                    <th>Editar</th>
+                    <th>Código de Cierre</th>
+                    <th>Aplicación</th>
+                    <th>Descripción</th>
+                    <th>Causa de Cierre</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for codigo in lista_de_codigos %}
+                <tr>
+                    <td class="text-center">
+                        <form action="{% url 'gestion:eliminar_cod_cierre' codigo.id %}" method="post"
+                            onsubmit="return confirm('¿Estás seguro de que deseas eliminar este código de cierre?');"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-icon btn-delete" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'gestion:editar_cod_cierre' codigo.id %}" class="btn-icon btn-edit"
+                            title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                    <td>{{ codigo.cod_cierre }}</td>
+                    <td>{{ codigo.aplicacion.nombre_aplicacion|truncatechars:20 }}</td>
+                    <td>{{ codigo.desc_cod_cierre }}</td>
+                    <td>{{ codigo.causa_cierre }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'gestion/js/cod_cierre.js' %}"></script>
+{% endblock extra_scripts %}

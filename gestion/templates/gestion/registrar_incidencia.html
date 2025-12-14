@@ -1,0 +1,189 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}
+{% if incidencia %}
+Editar Incidencia
+{% else %}
+Registrar Incidencia
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/registrar_incidencia.css' %}">{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="main-content page-container-incidencia" data-aplicacion-id="{{ incidencia.aplicacion.id|default:'' }}"
+    data-codigo-cierre-id="{{ incidencia.codigo_cierre.id|default:'' }}"
+    data-codigos-cierre-url="{% url 'gestion:get_codigos_cierre_por_aplicacion' 0 %}">
+    <div class="page-header">
+        <h1 class="page-title">
+            {% if incidencia %}
+            Editar Incidencia
+            {% else %}
+            Registrar Nueva Incidencia
+            {% endif %}
+        </h1>
+    </div>
+
+    <form method="post"
+        action="{% if incidencia %}{% url 'gestion:editar_incidencia' incidencia.id %}{% else %}{% url 'gestion:registrar_incidencia' %}{% endif %}"
+        class="registration-form-layout" autocomplete="off">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <h4>Por favor corrige los siguientes errores:</h4>
+            <ul>
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="form-column">
+            <div class="form-block">
+                <h3 class="form-block-title">Datos Principales</h3>
+                <div class="form-group">
+                    <label for="{{ form.incidencia.id_for_label }}">{{ form.incidencia.label }}</label>
+                    {{ form.incidencia }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.aplicacion.id_for_label }}">{{ form.aplicacion.label }}</label>
+                    {{ form.aplicacion }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.descripcion_incidencia.id_for_label }}">Descripción Incidencia</label>
+                    {{ form.descripcion_incidencia }}
+                </div>
+            </div>
+
+            <div class="form-block">
+                <h3 class="form-block-title">Análisis y Solución</h3>
+                <div class="form-group">
+                    <label for="{{ form.causa.id_for_label }}">{{ form.causa.label }}</label>
+                    {{ form.causa }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.tec_analisis.id_for_label }}">{{ form.tec_analisis.label }}</label>
+                    {{ form.tec_analisis }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.correccion.id_for_label }}">{{ form.correccion.label }}</label>
+                    {{ form.correccion }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.solucion_final.id_for_label }}">{{ form.solucion_final.label }}</label>
+                    {{ form.solucion_final }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-column">
+            <div class="form-block">
+                <h3 class="form-block-title">Clasificación</h3>
+                <div class="form-group">
+                    <label for="{{ form.estado.id_for_label }}">{{ form.estado.label }}</label>
+                    {{ form.estado }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.impacto.id_for_label }}">{{ form.impacto.label }}</label>
+                    {{ form.impacto }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.severidad.id_for_label }}">{{ form.severidad.label }}</label>
+                    {{ form.severidad }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.bloque.id_for_label }}">{{ form.bloque.label }}</label>
+                    {{ form.bloque }}
+                </div>
+            </div>
+
+            <div class="form-block">
+                <h3 class="form-block-title">Detalles de Cierre</h3>
+                <div class="form-group">
+                    <label for="{{ form.interfaz.id_for_label }}">{{ form.interfaz.label }}</label>
+                    {{ form.interfaz }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.cluster.id_for_label }}">{{ form.cluster.label }}</label>
+                    {{ form.cluster }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.codigo_cierre.id_for_label }}">{{ form.codigo_cierre.label }}</label>
+                    {{ form.codigo_cierre }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+                    {{ form.observaciones }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.demandas.id_for_label }}">{{ form.demandas.label }}</label>
+                    {{ form.demandas }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.workaround.id_for_label }}">{{ form.workaround.label }}</label>
+                    {{ form.workaround }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-column">
+            <div class="form-block">
+                <h3 class="form-block-title">Fechas y Asignación</h3>
+                <div class="form-group">
+                    <label for="{{ form.fecha_apertura.id_for_label }}">{{ form.fecha_apertura.label }}</label>
+                    {{ form.fecha_apertura }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.fecha_ultima_resolucion.id_for_label }}">Fecha última resolución</label>
+                    {{ form.fecha_ultima_resolucion }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.usuario_asignado.id_for_label }}">{{ form.usuario_asignado.label }}</label>
+                    {{ form.usuario_asignado }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.grupo_resolutor.id_for_label }}">{{ form.grupo_resolutor.label }}</label>
+                    {{ form.grupo_resolutor }}
+                </div>
+            </div>
+            <div class="form-block">
+                <h3 class="form-block-title">Bitácora (*)</h3>
+                <div class="form-group">
+                    {{ form.bitacora }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if incidencia %}
+                Actualizar Incidencia
+                {% else %}
+                Registrar Incidencia
+                {% endif %}
+            </button>
+            <!-- <a href="#" class="btn btn-secondary">Carga Masiva Inicial</a> -->
+            <a href="{% url 'gestion:incidencias' %}" class="btn btn-secondary link-con-spinner">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script src="{% static 'gestion/js/registrar_incidencia.js' %}"></script>
+{% endblock extra_scripts %}

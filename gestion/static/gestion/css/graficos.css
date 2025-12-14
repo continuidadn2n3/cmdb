@@ -1,0 +1,211 @@
+/* gestion/static/gestion/css/graficos.css */
+
+
+/* --- INICIO: Estilos de Layout de Página --- */
+
+
+/* Estos estilos aseguran que el contenedor principal ocupe el ancho completo,
+   permitiendo que los filtros se distribuyan horizontalmente. */
+
+.page-container {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px 25px;
+    box-sizing: border-box;
+}
+
+.page-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    color: var(--color-blanco);
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+
+/* --- FIN: Estilos de Layout de Página --- */
+
+
+/* --- INICIO: Estilos de Filtros (Unificados) --- */
+
+
+/* Estilos para la caja de filtros, consistentes con otras páginas (aplicaciones.css) */
+
+.filter-box {
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    border-radius: 8px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.filter-header h3 {
+    margin: 0;
+    color: var(--color-blanco);
+    font-weight: 400;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: var(--color-texto-secundario);
+}
+
+.filter-group select,
+.filter-group input[type="date"] {
+    width: 100%;
+    font-size: 1em;
+    padding: 10px;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.filter-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn.filter-btn {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    padding: 10px 30px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-gris-ceramica);
+    padding: 8px 15px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border-color: var(--color-purpura);
+}
+
+
+/*
+  Esta es la regla clave, idéntica a la de aplicaciones.css.
+  Proporciona la estructura necesaria para que la animación slideDown() de jQuery funcione.
+*/
+
+#filter-container {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid var(--color-purpura);
+}
+
+
+/* --- FIN: Estilos de Filtros --- */
+
+
+/* --- INICIO: Estilos de Tarjetas de Estadísticas y Gráficos (Originales) --- */
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    color: var(--color-blanco);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    padding: 10px 15px;
+    /* Reducimos el relleno interno */
+    text-align: center;
+    width: 280px;
+    /* Les damos un ancho fijo */
+    flex-grow: 0;
+    /* Evitamos que crezcan para llenar el espacio */
+}
+
+.stat-card h4 {
+    margin: 0 0 10px 0;
+    font-weight: 400;
+    font-size: 0.9rem;
+    /* Reducimos el tamaño del título */
+    color: var(--color-texto-secundario);
+}
+
+.stat-card .stat-value {
+    margin: 0;
+    font-size: 2em;
+    /* Reducimos el tamaño del número */
+    font-weight: 700;
+    color: var(--color-gris-ceramica);
+}
+
+.dashboard-container {
+    /* Hacemos que este contenedor use flexbox para apilar sus hijos (las filas) verticalmente. */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Espacio entre las filas de gráficos */
+    padding-top: 20px;
+    width: 100%;
+}
+
+.chart-row {
+    display: flex;
+    gap: 20px;
+    /* Espacio entre los gráficos de una misma fila */
+}
+
+.chart-card {
+    background-color: var(--color-morado);
+    border: 1px solid var(--color-purpura);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1 1 30%;
+    /* Permite que las tarjetas crezcan y se encojan, con una base de ~33% */
+    min-width: 350px;
+    /* Ancho mínimo antes de que los gráficos se reorganicen */
+}
+
+.chart-container {
+    position: relative;
+    height: 45vh;
+    min-height: 350px;
+}
+
+
+/* --- FIN: Estilos de Tarjetas --- */

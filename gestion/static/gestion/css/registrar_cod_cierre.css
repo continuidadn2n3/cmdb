@@ -1,0 +1,215 @@
+/* CSS para registrar/editar código de cierre (layout de 1 columna) */
+
+.page-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    color: var(--color-blanco);
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+.table-container {
+    background-color: var(--color-morado);
+    padding: 30px 40px;
+    border-radius: 8px;
+    border: 1px solid var(--color-purpura);
+    width: 80%;
+    max-width: 800px;
+    margin-top: 20px;
+    box-sizing: border-box;
+}
+
+.simple-form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--color-texto-secundario);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    background-color: var(--color-morado-oscuro);
+    color: var(--color-blanco);
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 4px;
+    padding: 12px;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    resize: none;
+    /* <-- AJUSTE REALIZADO */
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-purpura);
+    box-shadow: 0 0 8px rgba(255, 0, 84, 0.5);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-purpura);
+}
+
+.btn.btn-primary,
+.form-actions button {
+    background-color: var(--color-purpura);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn.btn-primary:hover,
+.form-actions button:hover {
+    background-color: var(--color-purpura-oscuro);
+}
+
+.btn.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-gris-ceramica);
+    color: var(--color-gris-ceramica);
+    padding: 12px 25px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn.btn-secondary:hover {
+    background-color: var(--color-purpura);
+    color: var(--color-blanco);
+    border-color: var(--color-purpura);
+}
+
+
+/* --- ESTILOS PARA LA SECCIÓN 'ÚLTIMOS CÓDIGOS' --- */
+
+
+/* Contenedor principal de la sección */
+
+#ultimos-codigos-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Fondo oscuro semitransparente */
+    border: 1px solid #ff0054;
+    /* Borde rosa neón, como el botón Guardar */
+    border-radius: 8px;
+    padding: 20px 25px;
+    margin-top: 40px;
+    /* Más separación del formulario */
+}
+
+
+/* Título de la sección "Últimos 5 Códigos..." */
+
+#ultimos-codigos-container h3 {
+    color: #f0f0f0;
+    /* Un blanco no tan intenso */
+    font-weight: 500;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    /* Línea separadora sutil */
+    padding-bottom: 10px;
+}
+
+
+/* Lista que contendrá los items */
+
+#lista-ultimos-codigos {
+    list-style-type: none;
+    /* Quitamos los puntos de la lista */
+    padding-left: 0;
+    margin: 0;
+}
+
+
+/* Cada fila (<li>) de la lista */
+
+#lista-ultimos-codigos li {
+    display: grid;
+    /* Usamos Grid para crear las columnas */
+    grid-template-columns: 150px 1fr;
+    /* Columna 1 (código) fija, Columna 2 (desc) flexible */
+    gap: 20px;
+    /* Espacio entre las columnas */
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Separador entre filas */
+    align-items: center;
+    /* Centra verticalmente el contenido */
+}
+
+
+/* Quitamos el borde de la última fila para un acabado limpio */
+
+#lista-ultimos-codigos li:last-child {
+    border-bottom: none;
+}
+
+
+/* Estilo para el CÓDIGO (anr_s0001, etc.) */
+
+.codigo-item-code {
+    font-weight: 700;
+    /* Negrita */
+    color: #ff0054;
+    /* Color rosa neón para que destaque */
+    font-family: 'Courier New', Courier, monospace;
+    /* Fuente de tipo código */
+}
+
+
+/* Estilo para la DESCRIPCIÓN */
+
+.codigo-item-desc {
+    color: #dcdcdc;
+    /* Un gris claro para la descripción */
+    font-size: 0.9em;
+}
+
+
+/* Mensaje de "No se encontraron códigos..." o "Error..." */
+
+#lista-ultimos-codigos .mensaje-info {
+    color: #aaa;
+    font-style: italic;
+    padding: 15px;
+    text-align: center;
+}

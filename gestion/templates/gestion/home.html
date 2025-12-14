@@ -1,0 +1,42 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - CMDB{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'gestion/css/home.css' %}">{% endblock %}
+
+{% block navbar %}
+{# Dejamos este bloque vacío para que no se muestre la barra de navegación en la página de login #}
+{% endblock navbar %}
+
+{% block content %}
+
+    <h1 class="main-title">BIENVENIDO A NUESTRA CMDB</h1>
+
+    <div class="login-box">
+        <h1>Bienvenido</h1>
+        <p>Inicia sesión para continuar</p>
+
+        <form id="loginForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'gestion:dashboard' %}">
+            <div class="input-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Acceder</button>
+        </form>
+        <div class="login-footer">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block footer %}
+{# Dejamos este bloque vacío para que no se muestre el footer en la página de login #}
+{% endblock footer %}

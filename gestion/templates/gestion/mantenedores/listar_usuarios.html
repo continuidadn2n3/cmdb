@@ -1,0 +1,37 @@
+{% extends 'gestion/mantenedores/mantenedores_base.html' %}
+
+{% block browser_title %}Gestión de Usuarios{% endblock %}
+{% block page_title %}Gestion de Usuarios{% endblock %}
+ 
+{% block add_button %}
+    <a href="{% url 'gestion:registrar_usuario' %}" class="btn btn-primary">Agregar Usuario</a>
+{% endblock %}
+ 
+{% block table_content %}
+    <table id="tabla-mantenedor" class="data-table">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 10%;">Acciones</th>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th class="text-center" style="width: 10%;">Habilitado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in registros %}
+            <tr>
+                <td class="text-center actions">
+                    {% include 'gestion/mantenedores/_mantenedor_actions.html' with object=usuario edit_url_name='gestion:editar_usuario' delete_url_name='gestion:eliminar_usuario' delete_confirm_message='¿Estás seguro de que deseas eliminar este usuario?' %}
+                </td>
+                <td>{{ usuario.usuario }}</td>
+                <td>{{ usuario.nombre }}</td>
+                <td class="text-center">
+                    {% if usuario.habilitado %}Sí{% else %}No{% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No hay usuarios registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

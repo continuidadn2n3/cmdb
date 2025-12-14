@@ -1,0 +1,10 @@
+-r requirements.txt
+
+# Servidor WSGI para desarrollo en Windows
+waitress==3.0.0
+
+# Herramientas de Dev y Linter
+ruff==0.5.5
+
+# Dependencias específicas de Windows
+pywin32==311 ; sys_platform == 'win32'

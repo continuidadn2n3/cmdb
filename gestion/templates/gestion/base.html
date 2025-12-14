@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CMDB{% endblock %}</title>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    
+    <link rel="stylesheet" href="{% static 'gestion/css/base.css' %}"> 
+    
+    {% block extra_css %}{% endblock %}
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    {# === INICIO DEL SPINNER DE CARGA === #}
+    <div class="spinner-overlay" id="loading-spinner">
+        <div class="spinner-cargando">
+            <div class="pelota"></div>
+            <div class="pelota"></div>
+            <div class="pelota"></div>
+        </div>
+        <span class="spinner-texto">Cargando...</span>
+    </div>
+    {# === FIN DEL SPINNER DE CARGA === #}
+
+    {% block navbar %}
+        <div class="navbar">
+            <a href="{% url 'gestion:dashboard' %}" class="navbar-brand">CMDB Incidencias</a>
+            <div class="navbar-links">
+                {% if user.is_superuser %}
+                <a href="{% url 'gestion:view_logs' %}" class="navbar-link link-con-spinner">Ver Logs</a>
+                {% endif %}
+
+                {% block extra_nav_buttons %}{% endblock extra_nav_buttons %}
+
+                <form id="logout-form" action="{% url 'gestion:logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="navbar-logout">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endblock navbar %}
+
+    <main class="main-content {% block main_class %}{% endblock %}">
+        {% block content %}
+            {# El contenido de las páginas hijas irá aquí, SIN el div.main-content #}
+        {% endblock content %}
+    </main>
+
+    {% block footer %}
+        <div class="footer">
+            <p id="footer-date"></p>
+        </div>
+    {% endblock footer %}
+
+    <!-- Scripts comunes para toda la aplicación -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plugin para mostrar etiquetas de datos en los gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="{% static 'gestion/js/script.js' %}"></script>
+
+    {# --- Bloque para mostrar mensajes de Django con SweetAlert2 --- #}
+    {% if messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                {% for message in messages %}
+                    Swal.fire({
+                        title: '{% if message.level == 25 %}Éxito{% elif message.level == 40 %}Error{% elif message.level == 30 %}Advertencia{% else %}Información{% endif %}',
+                        text: "{{ message|escapejs }}",
+                        icon: '{{ message.tags }}', // 'success', 'error', 'warning', 'info'
+                        confirmButtonText: 'Ok',
+                    });
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+
+    <!-- Bloque para scripts adicionales específicos de cada página -->
+    {% block extra_scripts %}{% endblock extra_scripts %}
+
+</body>
+</html>

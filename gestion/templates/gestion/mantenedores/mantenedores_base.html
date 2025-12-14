@@ -1,0 +1,64 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% block browser_title %}Mantenedor{% endblock %} - CMDB
+{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'gestion/css/mantenedores.css' %}">{% endblock %}
+
+{% block extra_nav_buttons %}
+    {% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="page-container" data-total-registros="{{ total_registros|default:0 }}">
+    <div class="page-header">
+        <h1 class="page-title">{% block page_title %}Mantenedor{% endblock %}</h1>
+        {% block add_button %}
+            {% if add_url_name %}
+                <a href="{% url add_url_name %}" class="btn btn-primary" id="btn-registrar">
+                    <i class="fas fa-plus"></i> Registrar Nuevo
+                </a>
+            {% endif %}
+        {% endblock %}
+    </div>
+
+    {% block filter_section %}
+        <div class="filter-box" id="form-container" style="display: none;">
+            <h3 class="filter-header">Formulario</h3>
+            <form method="post" action="{% if form_action_url %}{% url form_action_url %}{% endif %}" class="form-con-spinner">
+                {% csrf_token %}
+                <div class="filter-grid">
+                    {% for field in form %}
+                    <div class="filter-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn filter-btn">Guardar</button>
+                    <button type="button" class="btn filter-btn btn-cancelar">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    {% endblock filter_section %}
+
+    {% block mantenedor_content %}
+        <div class="table-container">
+            {% block table_content %}{% endblock %}
+        </div>
+    {% endblock mantenedor_content %}
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'gestion/js/mantenedores.js' %}"></script>
+{% endblock extra_scripts %}

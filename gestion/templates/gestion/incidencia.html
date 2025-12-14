@@ -1,0 +1,236 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Incidencias - CMDB{% endblock %}
+
+{% block extra_css %}
+{# Ahora solo necesitamos un archivo CSS unificado #}
+<link rel="stylesheet" href="{% static 'gestion/css/incidencia.css' %}">
+{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="page-container" data-total-registros="{{ total_registros|default:0 }}"
+    data-url-calcular-sla="{% url 'gestion:calcular_sla' %}"
+    data-url-exportar-csv="{% url 'gestion:exportar_sla_csv' %}"
+    data-url-exportar-reporte="{% url 'gestion:exportar_incidencias_reporte' %}">
+
+    <h1 class="page-title">Listado de Incidencias</h1>
+
+    <form method="get" action="">
+        <div class="filter-box">
+            <div class="filter-header">
+                <h3>Filtros de Búsqueda</h3>
+                <button id="toggle-filters-btn" class="btn-secondary" type="button">Mostrar Filtros</button>
+            </div>
+            <div id="filter-container" style="display: none;">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="incidencia">Incidencia:</label>
+                        <input type="text" id="incidencia" name="incidencia"
+                            value="{{ request.GET.incidencia|default:'' }}" placeholder="Buscar por incidencia...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="aplicativo">Aplicativo:</label>
+                        <select id="aplicativo" name="aplicativo">
+                            <option value="">Todos</option>
+                            {% for app in aplicaciones %}
+                            {% if request.GET.aplicativo == app.id|stringformat:"s" %}
+                            <option value="{{ app.id }}" selected>{{ app.nombre_aplicacion }}</option>
+                            {% else %}
+                            <option value="{{ app.id }}">{{ app.nombre_aplicacion }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="bloque">Bloque:</label>
+                        <select id="bloque" name="bloque">
+                            <option value="">Todos</option>
+                            {% for bloque in bloques %}
+                            {% if request.GET.bloque == bloque.id|stringformat:"s" %}
+                            <option value="{{ bloque.id }}" selected>{{ bloque.desc_bloque }}</option>
+                            {% else %}
+                            <option value="{{ bloque.id }}">{{ bloque.desc_bloque }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="grupo_resolutor">Grupo Resolutor:</label>
+                        <select id="grupo_resolutor" name="grupo_resolutor">
+                            <option value="">Todos</option>
+                            {% if request.GET.grupo_resolutor == 'exclude_indra_d' %}
+                            <option value="exclude_indra_d" selected>Todos (Sin INDRA_D)</option>
+                            {% else %}
+                            <option value="exclude_indra_d">Todos (Sin INDRA_D)</option>
+                            {% endif %}
+                            {% for grupo in grupos_resolutores %}
+                            {% if request.GET.grupo_resolutor == grupo.id|stringformat:"s" %}
+                            <option value="{{ grupo.id }}" selected>{{ grupo.desc_grupo_resol }}</option>
+                            {% else %}
+                            <option value="{{ grupo.id }}">{{ grupo.desc_grupo_resol }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="cumple_sla">Cumple SLA:</label>
+                        <select id="cumple_sla" name="cumple_sla">
+                            <option value="">Todos</option>
+                            {% if request.GET.cumple_sla == 'Sí' %}
+                            <option value="Sí" selected>Sí</option>
+                            {% else %}
+                            <option value="Sí">Sí</option>
+                            {% endif %}
+                            {% if request.GET.cumple_sla == 'No' %}
+                            <option value="No" selected>No</option>
+                            {% else %}
+                            <option value="No">No</option>
+                            {% endif %}
+                            {% if request.GET.cumple_sla == 'No Aplica' %}
+                            <option value="No Aplica" selected>No Aplica</option>
+                            {% else %}
+                            <option value="No Aplica">No Aplica</option>
+                            {% endif %}
+                            {% if request.GET.cumple_sla == 'No Calculado' %}
+                            <option value="No Calculado" selected>No Calculado</option>
+                            {% else %}
+                            <option value="No Calculado">No Calculado</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="codigo_cierre">Código de Cierre:</label>
+                        <select id="codigo_cierre" name="codigo_cierre">
+                            <option value="">Todos</option>
+                            {% for codigo in codigos_cierre %}
+                            {% if request.GET.codigo_cierre == codigo.id|stringformat:"s" %}
+                            <option value="{{ codigo.id }}" selected>{{ codigo.cod_cierre }}</option>
+                            {% else %}
+                            <option value="{{ codigo.id }}">{{ codigo.cod_cierre }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="fecha_desde">Fecha Cierre (Desde):</label>
+                        <input type="date" id="fecha_desde" name="fecha_desde"
+                            value="{{ request.GET.fecha_desde|default:'' }}">
+                    </div>
+                    <div class="filter-group">
+                        <label for="fecha_hasta">Fecha Cierre (Hasta):</label>
+                        <input type="date" id="fecha_hasta" name="fecha_hasta"
+                            value="{{ request.GET.fecha_hasta|default:'' }}">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn filter-btn">Filtrar</button>
+                    <button type="button" id="limpiar-filtros-btn" class="btn filter-btn">Limpiar Filtros</button>
+                    <button type="button" id="btn-exportar-csv"
+                        class="btn filter-btn link-con-spinner download-link">Exportar SLA (CSV)</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="action-buttons-container">
+        <a href="{% url 'gestion:registrar_incidencia' %}" class="btn filter-btn link-con-spinner">Registrar
+            Incidencia</a>
+        <a href="{% url 'gestion:carga_masiva_incidencia' %}" class="btn filter-btn link-con-spinner">Carga Masiva</a>
+        <a href="{% url 'gestion:carga_masiva_inicial' %}" class="btn filter-btn link-con-spinner">
+            <i class="fas fa-database"></i> Carga Inicial
+        </a>
+        <button id="btn-exportar-reporte" class="btn btn-report filter-btn link-con-spinner download-link">Generar
+            Reporte</button>
+
+        <a href="{% url 'gestion:incidencias' %}?fecha_desde={{ fecha_inicio_mes }}&fecha_hasta={{ fecha_fin_mes }}"
+            class="btn btn-info filter-btn link-con-spinner">Ver Mes Actual</a>
+        <a href="{% url 'gestion:incidencias' %}?ver_todos=1" class="btn btn-secondary filter-btn link-con-spinner">Ver
+            Todos</a>
+        <button id="btn-asignar-sla" class="btn btn-report filter-btn">Calcular SLA</button>
+    </div>
+
+    <div class="table-container">
+        <table id="tabla-incidencias" class="data-table data-table-loading">
+            <thead>
+                <tr>
+                    <th>Eliminar</th>
+                    <th>
+                        <input type="checkbox" id="select-all-checkbox" title="Seleccionar Todo">
+                    </th>
+                    <th>Editar</th>
+                    <th>Incidencia</th>
+                    <th>Cod. Aplicativo</th>
+                    <th>Aplicativo</th>
+                    <th>Criticidad App</th>
+                    <th>Cod. Cierre</th>
+                    <th>Estado</th>
+                    <th>Severidad</th>
+                    <th>Bloque</th>
+                    <th>Usuario</th>
+                    <th>Fecha Apertura</th>
+                    <th>Fecha Cierre</th>
+                    <th>Grupo Resolutor</th>
+                    <th>Cumple SLA</th>
+                    <th>Tiempo SLA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for incidencia in lista_de_incidencias %}
+                <tr data-incidencia-id="{{ incidencia.id }}">
+                    <td class="text-center">
+                        <form action="{% url 'gestion:eliminar_incidencia' incidencia.id %}" method="post"
+                            style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-icon btn-delete" title="Eliminar"
+                                onclick="return confirm('¿Estás seguro de que quieres eliminar la incidencia \'{{ incidencia.incidencia }}\'?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-center">
+                        <input type="checkbox" class="incidencia-checkbox" value="{{ incidencia.id }}">
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'gestion:editar_incidencia' incidencia.id %}" class="btn-icon btn-edit"
+                            title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                    <td>{{ incidencia.incidencia }}</td>
+                    <td>{{ incidencia.aplicacion.cod_aplicacion }}</td>
+                    <td>{{ incidencia.aplicacion.nombre_aplicacion|truncatechars:20}}</td>
+                    <td>{{ incidencia.aplicacion.criticidad.desc_criticidad|default:"N/A" }}</td>
+                    <td>{{ incidencia.codigo_cierre.cod_cierre }}</td>
+                    <td>{{ incidencia.estado.desc_estado }}</td>
+                    <td>{{ incidencia.severidad.desc_severidad|default:"N/A" }}</td>
+                    <td>{{ incidencia.bloque.desc_bloque }}</td>
+                    <td>{{ incidencia.usuario_asignado.usuario }}</td>
+                    <td>{{ incidencia.fecha_apertura|date:"Y-m-d" }}</td>
+                    <td>{{ incidencia.fecha_ultima_resolucion|date:"Y-m-d" }}</td>
+                    <td>{{ incidencia.grupo_resolutor.desc_grupo_resol|default:"No asignado" }}</td>
+                    <td class="celda-cumple-sla">{{ incidencia.cumple_sla|default:"N/A" }}</td>
+                    <td class="celda-tiempo-sla">
+                        {% if incidencia.tiempo_sla_calculado %}
+                        {{ incidencia.tiempo_sla_calculado }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+{# Toda la lógica de JavaScript se ha movido al archivo externo. #}
+<script src="{% static 'gestion/js/incidencia.js' %}"></script>
+{% endblock extra_scripts %}

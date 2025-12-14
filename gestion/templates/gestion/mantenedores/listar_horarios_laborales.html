@@ -1,0 +1,41 @@
+{% extends 'gestion/mantenedores/mantenedores_base.html' %}
+
+{% block browser_title %}Mantenedor de Horarios Laborales{% endblock %}
+{% block page_title %}Mantenedor de Horarios Laborales{% endblock %}
+
+{% block add_button %}
+    {# Solo mostramos el botón si hay días de la semana sin horario asignado. #}
+    <a href="{% if se_pueden_agregar_mas %}{% url 'gestion:registrar_horario_laboral' %}{% else %}#{% endif %}"
+       class="btn btn-primary {% if not se_pueden_agregar_mas %}disabled{% endif %}"
+       {% if not se_pueden_agregar_mas %}title="Ya se han definido horarios para todos los días de la semana." aria-disabled="true"{% endif %}>
+        Agregar Horario
+    </a>
+{% endblock %}
+
+{% block table_content %}
+    <table id="tabla-mantenedor" class="data-table">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 10%;">Acciones</th>
+                <th>Día de la Semana</th>
+                <th>Horario Inicio</th>
+                <th>Horario Fin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# Asegúrate que tu vista pase la variable como 'registros' para mantener la consistencia #}
+            {% for horario in registros %}
+            <tr>
+                <td class="text-center actions">
+                    {% include 'gestion/mantenedores/_mantenedor_actions.html' with object=horario edit_url_name='gestion:editar_horario_laboral' delete_url_name='gestion:eliminar_horario_laboral' delete_confirm_message='¿Estás seguro de que deseas eliminar este horario?' %}
+                </td>
+                <td>{{ horario.get_dia_semana_display }}</td>
+                <td>{{ horario.hora_inicio|time:"H:i"|default:"CERRADO" }}</td>
+                <td>{{ horario.hora_fin|time:"H:i"|default:"CERRADO" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No hay horarios laborales definidos.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock table_content %}

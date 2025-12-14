@@ -1,0 +1,91 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}
+{% if aplicacion %}Editar Aplicación{% else %}Registrar Aplicación{% endif %} - CMDB
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/registrar_aplicacion.css' %}">{% endblock %}
+
+{% block extra_nav_buttons %}
+{% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block main_class %}main-content-centered{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        {% if aplicacion %}Editar Aplicación{% else %}Registrar Nueva Aplicación{% endif %}
+    </h1>
+</div>
+
+<div class="table-container">
+    <form method="post"
+        action="{% if aplicacion %}{% url 'gestion:editar_aplicacion' aplicacion.id %}{% else %}{% url 'gestion:registrar_aplicacion' %}{% endif %}">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <h4>Por favor corrige los siguientes errores:</h4>
+            <ul>
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="registration-form-layout">
+
+            <div class="form-left-column">
+                <div class="form-group">
+                    <label for="{{ form.cod_aplicacion.id_for_label }}">{{ form.cod_aplicacion.label }}</label>
+                    {{ form.cod_aplicacion }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.nombre_aplicacion.id_for_label }}">{{ form.nombre_aplicacion.label }}</label>
+                    {{ form.nombre_aplicacion }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.bloque.id_for_label }}">{{ form.bloque.label }}</label>
+                    {{ form.bloque }}
+                </div>
+            </div>
+
+            <div class="form-right-column">
+                <div class="form-group">
+                    <label for="{{ form.criticidad.id_for_label }}">{{ form.criticidad.label }}</label>
+                    {{ form.criticidad }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.estado.id_for_label }}">{{ form.estado.label }}</label>
+                    {{ form.estado }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.desc_aplicacion.id_for_label }}">{{ form.desc_aplicacion.label }}</label>
+                    {{ form.desc_aplicacion }}
+                </div>
+            </div>
+
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if aplicacion %}Actualizar Aplicación{% else %}Guardar Aplicación{% endif %}
+            </button>
+            {% if not aplicacion %}
+            <a href="{% url 'gestion:carga_masiva_aplicaciones' %}" class="btn btn-secondary link-con-spinner">Carga
+                Masiva</a>
+            {% endif %}
+            <a href="{% url 'gestion:aplicaciones' %}" class="btn btn-secondary link-con-spinner">Cancelar</a>
+        </div>
+
+    </form>
+</div>
+{% endblock content %}

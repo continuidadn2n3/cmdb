@@ -1,0 +1,238 @@
+{% extends 'gestion/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard de Incidencias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/graficos.css' %}">
+{% endblock %}
+
+{% block extra_nav_buttons %}
+    {% include 'gestion/_extra_nav_buttons.html' %}
+{% endblock extra_nav_buttons %}
+
+{% block content %}
+<div class="page-container" 
+     data-url-graficos-data="{% url 'gestion:graficos_data' %}" 
+     data-url-codigos-cierre="{% url 'gestion:codigos_cierre_por_aplicativo' %}">
+
+    <div class="page-header">
+        <h1 class="page-title">Dashboard de Incidencias</h1>
+    </div>
+
+    <div class="filter-box">
+        <div class="filter-header" id="toggle-filters-header">
+            <h3>Filtros de Búsqueda</h3>
+            <button id="toggle-filters-btn" class="btn-secondary" type="button">Mostrar Filtros</button>
+        </div>
+        <div id="filter-container" style="display: none;">
+            <form id="graficos-filters-form">
+                <div class="filter-grid">
+
+                    <div class="filter-group">
+                        <label for="aplicativo">Aplicativo</label>
+                        <select name="aplicativo" id="aplicativo" class="form-control">
+                            <option value="">Todos</option>
+                            {% for app in aplicaciones %}
+                            {% if request.GET.aplicativo == app.id|stringformat:"s" %}
+                                <option value="{{ app.id }}" selected>{{ app.nombre_aplicacion }}</option>
+                            {% else %}
+                                <option value="{{ app.id }}">{{ app.nombre_aplicacion }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="codigo_cierre">Código de Cierre</label>
+                        <select name="codigo_cierre" id="codigo_cierre" class="form-control">
+                            <option value="">Todos</option>
+                            {# Las opciones se cargarán con JavaScript #}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="severidad">Severidad</label>
+                        <select name="severidad" id="severidad" class="form-control">
+                            <option value="">Todas</option>
+                            {% for sev in severidades %}
+                            {% if request.GET.severidad == sev.id|stringformat:"s" %}
+                                <option value="{{ sev.id }}" selected>{{ sev.desc_severidad }}</option>
+                            {% else %}
+                                <option value="{{ sev.id }}">{{ sev.desc_severidad }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="bloque">Bloque</label>
+                        <select name="bloque" id="bloque" class="form-control">
+                            <option value="">Todos</option>
+                            {% for b in bloques %}
+                            {% if request.GET.bloque == b.id|stringformat:"s" %}
+                                <option value="{{ b.id }}" selected>{{ b.desc_bloque }}</option>
+                            {% else %}
+                                <option value="{{ b.id }}">{{ b.desc_bloque }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="grupo_resolutor">Grupo Resolutor</label>
+                        <select name="grupo_resolutor" id="grupo_resolutor" class="form-control">
+                            <option value="">Todos</option>
+                            {% if request.GET.grupo_resolutor == 'exclude_indra_d' %}
+                                <option value="exclude_indra_d" selected>Todos (Sin INDRA_D)</option>
+                            {% else %}
+                                <option value="exclude_indra_d">Todos (Sin INDRA_D)</option>
+                            {% endif %}
+                            {% for grupo in grupos_resolutores %}
+                            {% if request.GET.grupo_resolutor == grupo.id|stringformat:"s" %}
+                                <option value="{{ grupo.id }}" selected>{{ grupo.desc_grupo_resol }}</option>
+                            {% else %}
+                                <option value="{{ grupo.id }}">{{ grupo.desc_grupo_resol }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="cumple_sla">Cumple SLA</label>
+                        <select name="cumple_sla" id="cumple_sla" class="form-control">
+                            <option value="">Todos</option>
+                            {% if request.GET.cumple_sla == 'Sí' %}
+                                <option value="Sí" selected>Sí</option>
+                            {% else %}
+                                <option value="Sí">Sí</option>
+                            {% endif %}
+                            {% if request.GET.cumple_sla == 'No' %}
+                                <option value="No" selected>No</option>
+                            {% else %}
+                                <option value="No">No</option>
+                            {% endif %}
+                            {% if request.GET.cumple_sla == 'No Aplica' %}
+                                <option value="No Aplica" selected>No Aplica</option>
+                            {% else %}
+                                <option value="No Aplica">No Aplica</option>
+                            {% endif %}
+                            {% if request.GET.cumple_sla == 'No Calculado' %}
+                                <option value="No Calculado" selected>No Calculado</option>
+                            {% else %}
+                                <option value="No Calculado">No Calculado</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="usuario">Usuario Asignado</label>
+                        <select name="usuario" id="usuario" class="form-control">
+                            <option value="">Todos</option>
+                            {% for u in usuarios %}
+                            {% if request.GET.usuario == u.id|stringformat:"s" %}
+                                <option value="{{ u.id }}" selected>{{ u.nombre }}</option>
+                            {% else %}
+                                <option value="{{ u.id }}">{{ u.nombre }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="fecha_desde">Fecha Desde</label>
+                        <input type="date" name="fecha_desde" id="fecha_desde" class="form-control" value="{{ request.GET.fecha_desde }}">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="fecha_hasta">Fecha Hasta</label>
+                        <input type="date" name="fecha_hasta" id="fecha_hasta" class="form-control" value="{{ request.GET.fecha_hasta }}">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="year">Año</label>
+                        <select name="year" id="year" class="form-control">
+                            <option value="">Todos</option>
+                            {% for y in years %}
+                            {% if request.GET.year == y.year|stringformat:"s" %}
+                                <option value="{{ y.year }}" selected>{{ y.year }}</option>
+                            {% else %}
+                                <option value="{{ y.year }}">{{ y.year }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="month">Mes</label>
+                        <select name="month" id="month" class="form-control">
+                            <option value="">Todos</option>
+                            {% for m in months %}
+                            {% if request.GET.month == m.value|stringformat:"s" %}
+                                <option value="{{ m.value }}" selected>{{ m.name }}</option>
+                            {% else %}
+                                <option value="{{ m.value }}">{{ m.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn filter-btn">Aplicar Filtros</button>
+                    <button type="button" id="limpiar-filtros-btn" class="btn filter-btn">Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="stats-container">
+        <div class="stat-card">
+            <h4>Total General Incidencias</h4>
+            <p id="total-general-valor" class="stat-value">0</p>
+        </div>
+        <div class="stat-card">
+            <h4>Total Incidencias (Filtrado)</h4>
+            <p id="total-filtrado-valor" class="stat-value">0</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="chart-row">
+            <div class="chart-card">
+                <div class="chart-container">
+                    <canvas id="chartPorIndraD"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-container">
+                    <canvas id="chartPorMes"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-container">
+                    <canvas id="chartPorSeveridad"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-card">
+                <div class="chart-container">
+                    <canvas id="chartPorCodigoCierre"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-container">
+                    <canvas id="chartPorAplicativo"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- jQuery y Chart.js ya se cargan desde base.html. -->
+    <script src="{% static 'gestion/js/graficos.js' %}"></script>
+{% endblock extra_scripts %}
