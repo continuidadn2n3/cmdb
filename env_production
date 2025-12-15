@@ -1,0 +1,7 @@
+DEBUG=False
+SECRET_KEY=cambia_esta_clave_segura_en_produccion
+DB_NAME=cmdb
+DB_USER=user
+DB_PASSWORD=password
+DB_HOST=db
+DB_PORT=3306
