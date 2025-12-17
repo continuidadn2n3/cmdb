@@ -7,4 +7,4 @@ DB_HOST=db
 DB_PORT=3306
 # DEBES cambiar localhost por tu dominio o IP real, separados por coma.
 # Ejemplo: ALLOWED_HOSTS=midominio.com,192.168.1.50
-ALLOWED_HOSTS=localhost,127.0.0.1
+ALLOWED_HOSTS=localhost,127.0.0.1,172.17.1.88
