@@ -57,7 +57,7 @@ class Command(BaseCommand):
             obj_id = data.pop('id')
             Usuario.objects.update_or_create(id=obj_id, defaults=data)
         self.stdout.write(self.style.SUCCESS(
-            "✅ Usuarios cargados/actualizados."))
+            "Usuarios cargados/actualizados."))
 
         # --- Cargando Estados ---
         self.stdout.write("Cargando Estados...")
@@ -74,7 +74,7 @@ class Command(BaseCommand):
             obj_id = data.pop('id')
             Estado.objects.update_or_create(id=obj_id, defaults=data)
         self.stdout.write(self.style.SUCCESS(
-            "✅ Estados cargados/actualizados."))
+            "Estados cargados/actualizados."))
 
         # --- Cargando Impactos ---
         self.stdout.write("Cargando Impactos...")
@@ -87,7 +87,7 @@ class Command(BaseCommand):
             obj_id = data.pop('id')
             Impacto.objects.update_or_create(id=obj_id, defaults=data)
         self.stdout.write(self.style.SUCCESS(
-            "✅ Impactos cargados/actualizados."))
+            "Impactos cargados/actualizados."))
 
         # --- Cargando Interfaces ---
         self.stdout.write("Cargando Interfaces...")
@@ -97,7 +97,7 @@ class Command(BaseCommand):
             Interfaz.objects.update_or_create(
                 id=obj_id, defaults={'desc_interfaz': desc})
         self.stdout.write(self.style.SUCCESS(
-            "✅ Interfaces cargadas/actualizadas."))
+            "Interfaces cargadas/actualizadas."))
 
         # --- Cargando Severidades ---
         self.stdout.write("Cargando Severidades...")
@@ -107,7 +107,7 @@ class Command(BaseCommand):
             Severidad.objects.update_or_create(
                 id=obj_id, defaults={'desc_severidad': desc})
         self.stdout.write(self.style.SUCCESS(
-            "✅ Severidades cargadas/actualizadas."))
+            "Severidades cargadas/actualizadas."))
 
         # --- Cargando Bloques ---
         self.stdout.write("Cargando Bloques...")
@@ -117,7 +117,7 @@ class Command(BaseCommand):
             Bloque.objects.update_or_create(
                 id=obj_id, defaults={'desc_bloque': desc})
         self.stdout.write(self.style.SUCCESS(
-            "✅ Bloques cargados/actualizados."))
+            "Bloques cargados/actualizados."))
 
         # --- Cargando Grupos Resolutores ---
         self.stdout.write("Cargando Grupos Resolutores...")
@@ -127,7 +127,7 @@ class Command(BaseCommand):
             GrupoResolutor.objects.update_or_create(
                 id=obj_id, defaults={'desc_grupo_resol': desc})
         self.stdout.write(self.style.SUCCESS(
-            "✅ Grupos Resolutores cargados/actualizados."))
+            "Grupos Resolutores cargados/actualizados."))
 
         # --- Cargando Días Feriados ---
         self.stdout.write("Cargando Días Feriados...")
@@ -156,7 +156,7 @@ class Command(BaseCommand):
             data['fecha'] = datetime.strptime(data['fecha'], '%Y-%m-%d').date()
             DiaFeriado.objects.update_or_create(id=obj_id, defaults=data)
         self.stdout.write(self.style.SUCCESS(
-            "✅ Días Feriados cargados/actualizados."))
+            "Días Feriados cargados/actualizados."))
 
         # --- Cargando Horario Laboral ---
         self.stdout.write("Cargando Horario Laboral...")
@@ -178,7 +178,7 @@ class Command(BaseCommand):
             obj_id = data.pop('id')
             HorarioLaboral.objects.update_or_create(id=obj_id, defaults=data)
         self.stdout.write(self.style.SUCCESS(
-            "✅ Horarios Laborales cargados/actualizados."))
+            "Horarios Laborales cargados/actualizados."))
 
         # --- Cargando Clusters ---
         self.stdout.write("Cargando Clusters...")
@@ -188,7 +188,7 @@ class Command(BaseCommand):
             Cluster.objects.update_or_create(
                 id=obj_id, defaults={'desc_cluster': desc})
         self.stdout.write(self.style.SUCCESS(
-            "✅ Clusters cargados/actualizados."))
+            "Clusters cargados/actualizados."))
 
         # --- Cargando Criticidades (necesario para Reglas SLA) ---
         self.stdout.write("Cargando Criticidades...")
@@ -197,7 +197,7 @@ class Command(BaseCommand):
         Criticidad.objects.update_or_create(
             id=2, defaults={'desc_criticidad': 'no critica'})
         self.stdout.write(self.style.SUCCESS(
-            "✅ Criticidades cargadas/actualizadas."))
+            "Criticidades cargadas/actualizadas."))
 
         # --- Cargando Reglas de SLA ---
         self.stdout.write("Cargando Reglas de SLA...")
@@ -227,7 +227,8 @@ class Command(BaseCommand):
             obj_id = data.pop('id')
             ReglaSLA.objects.update_or_create(id=obj_id, defaults=data)
         self.stdout.write(self.style.SUCCESS(
-            "✅ Reglas SLA cargadas/actualizadas."))
+            "Reglas SLA cargadas/actualizadas."))
 
         self.stdout.write(self.style.SUCCESS(
-            "\n🎉 ¡Proceso de carga de datos iniciales finalizado! 🎉"))
+            "\n¡Proceso de carga de datos iniciales finalizado!"))
+

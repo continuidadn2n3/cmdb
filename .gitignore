@@ -72,3 +72,9 @@ reglas-cmdb.md
 
 # Modelos ML (Binarios grandes)
 *.joblib
+
+# Scripts de mantenimiento local
+create_superuser.py
+
+# Archivos de Agente AI
+.agent/
