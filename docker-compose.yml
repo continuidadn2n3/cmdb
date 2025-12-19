@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
+    restart: always
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
@@ -19,11 +20,10 @@ services:
   db:
     image: mysql:8.0
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: cmdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: cmdbIndra
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -31,6 +31,7 @@ services:
 
   nginx:
     image: nginx:1.21-alpine
+    restart: always
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
@@ -46,6 +47,7 @@ volumes:
   mysql_data:
   static_volume:
   media_volume:
+
 
 networks:
   cmdb_network:

@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .views import health_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +24,5 @@ urlpatterns = [
     path('api/gestion/', include('gestion.api_urls')),
     # Rutas principales de la aplicación en la raíz (tu cambio original)
     path('', include('gestion.urls')),
+    path('health/', health_check, name='health_check'),
 ]

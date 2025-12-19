@@ -1,10 +1,9 @@
+SECRET_KEY=w+y#m@%l^-9)8+!&5*_=ExampleSecretKeyForProductionChangeIt
 DEBUG=False
-SECRET_KEY=cambia_esta_clave_segura_en_produccion
+ALLOWED_HOSTS=172.17.1.88,localhost,127.0.0.1
 DB_NAME=cmdb
-DB_USER=user
-DB_PASSWORD=password
+DB_USER=root
+DB_PASSWORD=cmdbIndra
 DB_HOST=db
 DB_PORT=3306
-# DEBES cambiar localhost por tu dominio o IP real, separados por coma.
-# Ejemplo: ALLOWED_HOSTS=midominio.com,192.168.1.50
-ALLOWED_HOSTS=localhost,127.0.0.1,172.17.1.88
+USE_SQLITE=False
