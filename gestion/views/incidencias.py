@@ -141,10 +141,9 @@ def incidencias_view(request):
     if filtro_fecha_desde:
         try:
             fecha_obj = datetime.strptime(filtro_fecha_desde, '%Y-%m-%d')
-            fecha_aware = timezone.make_aware(
-                fecha_obj, timezone.get_default_timezone())
+            # fecha_aware = timezone.make_aware(fecha_obj, timezone.get_default_timezone()) # Removed for USE_TZ=False
             incidencias_qs = incidencias_qs.filter(
-                fecha_ultima_resolucion__gte=fecha_aware)
+                fecha_ultima_resolucion__gte=fecha_obj)
             filtros_aplicados.append(f"fecha_desde='{filtro_fecha_desde}'")
         except (ValueError, TypeError):
             logger.warning(
@@ -154,10 +153,9 @@ def incidencias_view(request):
         try:
             fecha_obj = datetime.strptime(filtro_fecha_hasta, '%Y-%m-%d')
             fecha_obj_fin_dia = fecha_obj + timedelta(days=1)
-            fecha_aware = timezone.make_aware(
-                fecha_obj_fin_dia, timezone.get_default_timezone())
+            # fecha_aware = timezone.make_aware(fecha_obj_fin_dia, timezone.get_default_timezone()) # Removed for USE_TZ=False
             incidencias_qs = incidencias_qs.filter(
-                fecha_ultima_resolucion__lt=fecha_aware)
+                fecha_ultima_resolucion__lt=fecha_obj_fin_dia)
             filtros_aplicados.append(f"fecha_hasta='{filtro_fecha_hasta}'")
         except (ValueError, TypeError):
             logger.warning(
@@ -211,7 +209,9 @@ def registrar_incidencia_view(request):
         form = IncidenciaForm(request.POST)
         if form.is_valid():
             try:
-                nueva_incidencia = form.save()
+                nueva_incidencia = form.save(commit=False)
+                nueva_incidencia.usuario_creador = request.user
+                nueva_incidencia.save()
                 logger.info(f"Incidencia '{nueva_incidencia.incidencia}' registrada con éxito.")
                 messages.success(request, f'¡La incidencia "{nueva_incidencia.incidencia}" ha sido registrada con éxito!')
                 return redirect('gestion:incidencias')
@@ -402,7 +402,7 @@ def parse_flexible_date(date_string):
     for fmt in formats:
         try:
             dt = datetime.strptime(processed_string, fmt)
-            return timezone.make_aware(dt)
+            return dt # timezone.make_aware(dt) # Removed for USE_TZ=False
         except ValueError:
             continue
     
@@ -502,7 +502,7 @@ def carga_masiva_incidencia_view(request):
                 for fmt in formats:
                     try:
                         dt = datetime.strptime(processed_string, fmt)
-                        return timezone.make_aware(dt)
+                        return dt # timezone.make_aware(dt) # Removed for USE_TZ=False
                     except ValueError:
                         continue
 
@@ -633,6 +633,7 @@ def carga_masiva_incidencia_view(request):
 
                         except Incidencia.DoesNotExist:
                             # --- LÓGICA PARA NUEVAS INCIDENCIAS ---
+                            logger.info(f"Creando incidencia {incidencia_id} con usuario: {request.user} (ID: {request.user.id})")
                             obj = Incidencia.objects.create(
                                 incidencia=incidencia_id,
                                 descripcion_incidencia=row['descripcion_incidencia'].strip(
@@ -659,6 +660,7 @@ def carga_masiva_incidencia_view(request):
                                 bloque=bloque_obj,
                                 codigo_cierre=codigo_cierre_obj,
                                 usuario_asignado=usuario_asignado_obj,
+                                usuario_creador=request.user,
                             )
                             if is_indra_d_row:
                                 new_indra_d_count += 1
@@ -763,7 +765,7 @@ def exportar_incidencias_reporte_view(request):
         try:
             fecha_obj = datetime.strptime(filtro_fecha_desde, '%Y-%m-%d')
             incidencias_qs = incidencias_qs.filter(
-                fecha_ultima_resolucion__gte=timezone.make_aware(fecha_obj))
+                fecha_ultima_resolucion__gte=fecha_obj)
         except (ValueError, TypeError):
             pass
     if filtro_fecha_hasta:
@@ -771,7 +773,7 @@ def exportar_incidencias_reporte_view(request):
             fecha_obj = datetime.strptime(filtro_fecha_hasta, '%Y-%m-%d')
             fecha_obj_fin_dia = fecha_obj + timedelta(days=1)
             incidencias_qs = incidencias_qs.filter(
-                fecha_ultima_resolucion__lt=timezone.make_aware(fecha_obj_fin_dia))
+                fecha_ultima_resolucion__lt=fecha_obj_fin_dia)
         except (ValueError, TypeError):
             pass
 
@@ -787,7 +789,7 @@ def exportar_incidencias_reporte_view(request):
         fecha_resolucion_str = ""
         if inc.fecha_ultima_resolucion:
             # Hacemos la fecha consciente a la zona horaria local para extraer el mes correcto
-            fecha_local = timezone.localtime(inc.fecha_ultima_resolucion)
+            fecha_local = inc.fecha_ultima_resolucion # timezone.localtime(inc.fecha_ultima_resolucion) # Removed for USE_TZ=False
             mes_resolucion = meses_es.get(fecha_local.month, '')
             fecha_resolucion_str = fecha_local.strftime('%d-%m-%Y %H:%M')
 

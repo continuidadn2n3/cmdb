@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Modelos de tablas catálogo (simples)
 
@@ -183,6 +184,20 @@ class Incidencia(models.Model):
         null=True,
         help_text="Tiempo de gestión laboral calculado para el SLA.",
         verbose_name="Tiempo de Gestión (SLA)"
+    )
+
+    # Campos de Auditoría
+    usuario_creador = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='incidencias_creadas',
+        verbose_name="Creado por"
+    )
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de Creación"
     )
 
     def __str__(self) -> str:
