@@ -25,7 +25,7 @@ services:
       MYSQL_DATABASE: cmdb
       MYSQL_ROOT_PASSWORD: cmdbIndra
     volumes:
-      - mysql_data:/var/lib/mysql
+      - /opt/cmdb/mysql:/var/lib/mysql
     networks:
       - cmdb_network
 
@@ -44,7 +44,7 @@ services:
       - cmdb_network
 
 volumes:
-  mysql_data:
+  # mysql_data: (Removed in favor of bind mount)
   static_volume:
   media_volume:
 
