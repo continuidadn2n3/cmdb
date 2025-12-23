@@ -24,6 +24,8 @@ services:
     environment:
       MYSQL_DATABASE: cmdb
       MYSQL_ROOT_PASSWORD: cmdbIndra
+    ports:
+      - "3306:3306"
     volumes:
       - /opt/cmdb/mysql:/var/lib/mysql
     networks:

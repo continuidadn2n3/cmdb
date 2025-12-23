@@ -3,10 +3,11 @@
 
 {% block title %}Carga Masiva de Aplicaciones - CMDB{% endblock %}
 
-{% block extra_css %}<link rel="stylesheet" href="{% static 'gestion/css/carga_masiva.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/carga_masiva.css' %}">{% endblock %}
 
 {% block extra_nav_buttons %}
-    {% include 'gestion/_extra_nav_buttons.html' %}
+{% include 'gestion/_extra_nav_buttons.html' %}
 {% endblock extra_nav_buttons %}
 
 {% block content %}
@@ -37,93 +38,104 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="json_file">Archivo JSON</label>
-                <input type="file" name="json_file" id="json_file" accept=".json" required>
+                <input type="file" name="archivo" class="form-control" accept=".json" required>
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary link-con-spinner">Cargar Archivo</button>
-                <a href="{% url 'gestion:aplicaciones' %}" class="btn btn-secondary link-con-spinner">Volver al Listado</a>
+                <a href="{% url 'gestion:aplicaciones' %}" class="btn btn-secondary link-con-spinner">Volver al
+                    Listado</a>
             </div>
         </form>
 
         {# Bloque para mostrar el resumen estadístico de la carga #}
         {% if stats %}
-            <hr>
-            <h3>Resumen de la Carga</h3>
-            <div class="stats-summary">
-                <p><strong>Total de objetos en el archivo:</strong> {{ stats.total }}</p>
-                <p style="color: #28a745;"><strong>Creados con éxito:</strong> {{ stats.success }}</p>
-                <p style="color: #fd7e14;"><strong>Modificados por duplicidad:</strong> {{ stats.modified }}</p>
-                <p style="color: #17a2b8;"><strong>Omitidos (ya existían):</strong> {{ stats.skipped }}</p>
-                <p style="color: #dc3545;"><strong>Con errores:</strong> {{ stats.failed }}</p>
-            </div>
+        <hr>
+        <h3>Resumen de la Carga</h3>
+        <div class="stats-summary">
+            <p><strong>Total de objetos en el archivo:</strong> {{ stats.total }}</p>
+            <p style="color: #28a745;"><strong>Creados con éxito:</strong> {{ stats.success }}</p>
+            <p style="color: #fd7e14;"><strong>Modificados por duplicidad:</strong> {{ stats.modified }}</p>
+            <p style="color: #17a2b8;"><strong>Omitidos (ya existían):</strong> {{ stats.skipped }}</p>
+            <p style="color: #dc3545;"><strong>Con errores:</strong> {{ stats.failed }}</p>
+        </div>
         {% endif %}
 
         {# Sección para mostrar duplicados de ID en el archivo #}
         {% if duplicates %}
-            <hr>
-            <h3 style="color: #dc3545;">IDs de Aplicación Duplicados Encontrados</h3>
-            <p>El archivo no pudo ser procesado. Se encontraron los siguientes valores de 'id_aplicacion' repetidos. Por favor, corríjalos y vuelva a intentarlo.</p>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Línea / Objeto Nº</th>
-                        <th>ID Aplicación Duplicado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for dup in duplicates %}
-                        <tr>
-                            <td>{{ dup.line }}</td>
-                            <td>{{ dup.id }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <hr>
+        <h3 style="color: #dc3545;">IDs de Aplicación Duplicados Encontrados</h3>
+        <p>El archivo no pudo ser procesado. Se encontraron los siguientes valores de 'id_aplicacion' repetidos. Por
+            favor, corríjalos y vuelva a intentarlo.</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Línea / Objeto Nº</th>
+                    <th>ID Aplicación Duplicado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dup in duplicates %}
+                <tr>
+                    <td>{{ dup.line }}</td>
+                    <td>{{ dup.id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% endif %}
 
         {# Sección para mostrar los registros modificados automáticamente #}
         {% if modified_rows %}
-            <hr>
-            <h3 style="color: #fd7e14;">Registros Modificados Automáticamente ({{ modified_rows|length }})</h3>
-            <p>Los siguientes registros tenían un 'id_modulo' duplicado. El sistema los ha modificado para permitir la carga masiva.</p>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Línea / Objeto Nº</th>
-                        <th>ID Aplicación</th>
-                        <th>Nombre Aplicación</th>
-                        <th>Código Original</th>
-                        <th>Código Modificado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in modified_rows %}
-                        <tr>
-                            <td>{{ item.line }}</td>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.nombre_app }}</td>
-                            <td>{{ item.original_cod }}</td>
-                            <td><strong>{{ item.modified_cod }}</strong></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <hr>
+        <h3 style="color: #fd7e14;">Registros Modificados Automáticamente ({{ modified_rows|length }})</h3>
+        <p>Los siguientes registros tenían un 'id_modulo' duplicado. El sistema los ha modificado para permitir la carga
+            masiva.</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Línea / Objeto Nº</th>
+                    <th>ID Aplicación</th>
+                    <th>Nombre Aplicación</th>
+                    <th>Código Original</th>
+                    <th>Código Modificado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in modified_rows %}
+                <tr>
+                    <td>{{ item.line }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.nombre_app }}</td>
+                    <td>{{ item.original_cod }}</td>
+                    <td><strong>{{ item.modified_cod }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% endif %}
-        
+
         {# Sección para mostrar los registros con errores #}
         {% if failed_rows %}
-            <hr>
-            <h3 style="color: #dc3545;">Registros con Errores ({{ failed_rows|length }})</h3>
-            <p>Los siguientes registros no pudieron ser procesados. Por favor, corríjalos y vuelva a intentarlo.</p>
-            <table class="data-table">
-                <thead>
-                    <tr><th>Línea / Objeto Nº</th><th>Datos</th><th>Error</th></tr>
-                </thead>
-                <tbody>
-                    {% for item in failed_rows %}<tr><td>{{ item.line }}</td><td>{{ item.row_data }}</td><td>{{ item.error }}</td></tr>{% endfor %}
-                </tbody>
-            </table>
+        <hr>
+        <h3 style="color: #dc3545;">Registros con Errores ({{ failed_rows|length }})</h3>
+        <p>Los siguientes registros no pudieron ser procesados. Por favor, corríjalos y vuelva a intentarlo.</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Línea / Objeto Nº</th>
+                    <th>Datos</th>
+                    <th>Error</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in failed_rows %}<tr>
+                    <td>{{ item.line }}</td>
+                    <td>{{ item.row_data }}</td>
+                    <td>{{ item.error }}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
         {% endif %}
 
     </div>

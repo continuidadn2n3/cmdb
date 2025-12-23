@@ -383,8 +383,18 @@ def exportar_sla_csv_view(request):
         HttpResponse: Un archivo CSV para ser descargado por el navegador.
     """
     # 1. Obtención de Filtros y Log de Inicio
-    filtros_aplicados = [f"{k}='{v}'" for k, v in request.GET.items() if v]
-    log_filtros = f"con filtros: {', '.join(filtros_aplicados)}" if filtros_aplicados else "sin filtros"
+    from django.contrib import messages
+    from django.shortcuts import redirect
+
+    # 1. Obtención de Filtros y Log de Inicio
+    filtros_aplicados = [f"{k}='{v}'" for k, v in request.GET.items() if v and k != 'page'] # Ignoramos 'page' si existiera
+    
+    if not filtros_aplicados:
+        messages.warning(request, "Por favor, filtra los datos antes de exportar el reporte SLA.")
+        # Redirige a la vista de incidencias (ajusta el nombre de la URL según corresponda, asumo 'gestion:incidencias')
+        return redirect('gestion:incidencias')
+
+    log_filtros = f"con filtros: {', '.join(filtros_aplicados)}"
     logger.info(
         f"Usuario '{request.user}' ha solicitado exportación CSV de SLA {log_filtros}.")
 

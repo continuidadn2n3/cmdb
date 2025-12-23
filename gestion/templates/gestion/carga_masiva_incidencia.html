@@ -3,10 +3,11 @@
 
 {% block title %}Carga Masiva de Incidencias - CMDB{% endblock %}
 
-{% block extra_css %}<link rel="stylesheet" href="{% static 'gestion/css/carga_masiva.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gestion/css/carga_masiva.css' %}">{% endblock %}
 
 {% block extra_nav_buttons %}
-    {% include 'gestion/_extra_nav_buttons.html' %}
+{% include 'gestion/_extra_nav_buttons.html' %}
 {% endblock extra_nav_buttons %}
 
 {% block content %}
@@ -16,8 +17,10 @@
     </div>
 
     <div class="table-container">
-        <p>Seleccione un archivo <strong>XLSX (Excel)</strong>  de nombre <strong>salida_consolidada_final.xlsx</strong> para cargar incidencias en el sistema.</p>
-        <p>El sistema buscará una incidencia con el mismo número de ticket y la actualizará; si no la encuentra, creará una nueva.</p>
+        <p>Seleccione un archivo <strong>XLSX (Excel)</strong> de nombre <strong>salida_consolidada_final.xlsx</strong>
+            para cargar incidencias en el sistema.</p>
+        <p>El sistema buscará una incidencia con el mismo número de ticket y la actualizará; si no la encuentra, creará
+            una nueva.</p>
         <p>La primera fila del archivo debe contener las cabeceras (títulos de columna), con los siguientes nombrea</p>
         <p>
             <code class="code-block">
@@ -25,46 +28,51 @@
             </code>
         </p>
         <p class="mt-3">
-            <strong>Importante:</strong> Las columnas que terminan en <code>_id</code> (como <code>aplicacion_id</code>, <code>estado_id</code>, etc.) deben contener el <strong>nombre o código identificador</strong> del registro correspondiente (ej: "INDRA_B3"), no un ID numérico.
+            <strong>Importante:</strong> Las columnas que terminan en <code>_id</code> (como <code>aplicacion_id</code>,
+            <code>estado_id</code>, etc.) deben contener el <strong>nombre o código identificador</strong> del registro
+            correspondiente (ej: "INDRA_B3"), no un ID numérico.
         </p>
 
         <form method="post" enctype="multipart/form-data" action="{% url 'gestion:carga_masiva_incidencia' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="csv_file">Archivo CSV o XLSX</label>
-                <input type="file" name="csv_file" id="csv_file" accept=".csv, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required>
+                <input type="file" name="file" class="form-control"
+                    accept=".csv, .xlsx, .json, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    required>
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary link-con-spinner">Cargar Archivo</button>
-                <a href="{% url 'gestion:incidencias' %}" class="btn btn-secondary link-con-spinner">Volver al Listado</a>
+                <a href="{% url 'gestion:incidencias' %}" class="btn btn-secondary link-con-spinner">Volver al
+                    Listado</a>
             </div>
         </form>
 
         {% if failed_rows %}
-            <hr>
-            <h3 style="color: #dc3545;">Registros con Errores ({{ failed_rows|length }})</h3>
-            <p>Los siguientes registros no pudieron ser procesados. Por favor, corríjalos y vuelva a intentarlo.</p>
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Línea</th>
-                            <th>Datos de la Fila</th>
-                            <th>Error Detectado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in failed_rows %}
-                            <tr>
-                                <td>{{ item.line }}</td>
-                                <td class="text-monospace">{{ item.row_data }}</td>
-                                <td>{{ item.error }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <hr>
+        <h3 style="color: #dc3545;">Registros con Errores ({{ failed_rows|length }})</h3>
+        <p>Los siguientes registros no pudieron ser procesados. Por favor, corríjalos y vuelva a intentarlo.</p>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Datos de la Fila</th>
+                        <th>Error Detectado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in failed_rows %}
+                    <tr>
+                        <td>{{ item.line }}</td>
+                        <td class="text-monospace">{{ item.row_data }}</td>
+                        <td>{{ item.error }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% endif %}
     </div>
 </div>

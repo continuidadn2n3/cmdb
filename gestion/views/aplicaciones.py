@@ -183,7 +183,23 @@ def carga_masiva_view(request):
 
         try:
             # --- 2. Lectura del Archivo ---
-            all_rows = json.load(json_file)
+            # Leemos el contenido raw para intentar arreglarlo si es necesario
+            file_content = json_file.read().decode('utf-8').strip()
+            
+            # Intento de corrección: Si parece una lista de objetos pero le faltan los corchetes []
+            if file_content.startswith('{') and file_content.endswith('}'):
+                # Verificamos si parece tener múltiples objetos separados por coma
+                # Simplemente lo envolvemos en corchetes y probamos
+                logger.info("El archivo JSON parece no tener corchetes de lista. Intentando envolverlo automáticamente.")
+                file_content = f"[{file_content}]"
+
+            all_rows = json.loads(file_content)
+            
+            # VALIDACIÓN ESTRUCTURA JSON
+            if not isinstance(all_rows, list):
+                messages.error(request, 'El archivo JSON debe contener una lista de objetos ( [...] ).')
+                return render(request, 'gestion/carga_masiva_aplicativo.html')
+
             total_records_in_file = len(all_rows)
             logger.info(
                 f"Se leyeron {total_records_in_file} objetos del archivo JSON.")
@@ -193,6 +209,8 @@ def carga_masiva_view(request):
                 "Iniciando pre-validación de 'id_aplicacion' duplicados...")
             seen_ids, duplicates_found = set(), []
             for line, row in enumerate(all_rows, 1):
+                if not isinstance(row, dict):
+                    continue # Saltamos filas que no sean objetos
                 app_id = get_clean_value(row, 'id_aplicacion')
                 if app_id:
                     if app_id in seen_ids:
@@ -219,6 +237,9 @@ def carga_masiva_view(request):
             success_count, failed_rows, skipped_count, modified_rows = 0, [], 0, []
 
             for line_number, row in enumerate(all_rows, 1):
+                if not isinstance(row, dict):
+                    failed_rows.append({'line': line_number, 'row_data': str(row), 'error': 'El registro no es un objeto JSON válido (diccionario).'})
+                    continue
                 obj, created, cod_app_final = None, False, None
                 try:
                     id_aplicacion_str = get_clean_value(row, 'id_aplicacion')
@@ -235,20 +256,37 @@ def carga_masiva_view(request):
                         raise ValueError(
                             "'id_modulo' y 'nombre_app' son obligatorios.")
 
-                    # CORRECCIÓN 2: Se añade el bloque que busca los objetos relacionados
-                    bloque_str = bloque_map.get(get_clean_value(
-                        row, 'bloque', 'lower'), get_clean_value(row, 'bloque'))
-                    criticidad_str = criticidad_map.get(get_clean_value(
-                        row, 'criticidad', 'lower'), get_clean_value(row, 'criticidad'))
-                    estado_str = estado_map.get(get_clean_value(
-                        row, 'estado', 'lower'), get_clean_value(row, 'estado'))
+                    # LÓGICA SMART: Soporte para IDs directos (integers) o Descripciones (strings)
+                    
+                    # 1. Bloque
+                    bloque_val = get_clean_value(row, 'bloque')
+                    bloque_obj = None
+                    if bloque_val.isdigit(): # Es un ID
+                        bloque_obj = Bloque.objects.filter(id=int(bloque_val)).first()
+                    else: # Es texto, usamos el mapa
+                        bloque_str = bloque_map.get(bloque_val.lower(), bloque_val)
+                        if bloque_str:
+                            bloque_obj = Bloque.objects.filter(desc_bloque__iexact=bloque_str).first()
 
-                    bloque_obj = Bloque.objects.get(
-                        desc_bloque__iexact=bloque_str) if bloque_str else None
-                    criticidad_obj = Criticidad.objects.get(
-                        desc_criticidad__iexact=criticidad_str) if criticidad_str else None
-                    estado_obj = Estado.objects.get(
-                        desc_estado__iexact=estado_str) if estado_str else None
+                    # 2. Criticidad
+                    criticidad_val = get_clean_value(row, 'criticidad')
+                    criticidad_obj = None
+                    if criticidad_val.isdigit():
+                        criticidad_obj = Criticidad.objects.filter(id=int(criticidad_val)).first()
+                    else:
+                        criticidad_str = criticidad_map.get(criticidad_val.lower(), criticidad_val)
+                        if criticidad_str:
+                             criticidad_obj = Criticidad.objects.filter(desc_criticidad__iexact=criticidad_str).first()
+
+                    # 3. Estado
+                    estado_val = get_clean_value(row, 'estado')
+                    estado_obj = None
+                    if estado_val.isdigit():
+                         estado_obj = Estado.objects.filter(id=int(estado_val)).first()
+                    else:
+                        estado_str = estado_map.get(estado_val.lower(), estado_val)
+                        if estado_str:
+                             estado_obj = Estado.objects.filter(desc_estado__iexact=estado_str).first()
 
                     defaults = {
                         'cod_aplicacion': cod_aplicacion, 'nombre_aplicacion': nombre_aplicacion,
@@ -328,6 +366,11 @@ def carga_masiva_view(request):
                 }
             }
             return render(request, 'gestion/carga_masiva_aplicativo.html', context)
+
+        except json.JSONDecodeError as e:
+            logger.warning(f"Error de formato JSON en carga por '{request.user}': {e}")
+            messages.error(request, f"El archivo no tiene un formato JSON válido. Error: {e}")
+            return render(request, 'gestion/carga_masiva_aplicativo.html')
 
         except Exception as e:
             logger.critical(

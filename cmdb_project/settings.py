@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u%ysxc-e#ejysk(cygnrzkwojs$qy3oykix++gn241=-0@b452'
 
 # ADVERTENCIA DE SEGURIDAD: ¡no ejecute con la depuración activada en producción!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 
 
 # Application definition

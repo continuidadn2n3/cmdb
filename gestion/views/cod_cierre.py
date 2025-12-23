@@ -245,7 +245,21 @@ def carga_masiva_cod_cierre_view(request):
             return render(request, 'gestion/carga_masiva_cod_cierre.html')
 
         try:
-            all_rows = json.load(json_file)
+            # Leemos el contenido raw para intentar arreglarlo si es necesario
+            file_content = json_file.read().decode('utf-8').strip()
+            
+            # Intento de corrección: Si parece una lista de objetos pero le faltan los corchetes []
+            if file_content.startswith('{') and file_content.endswith('}'):
+                logger.info("El archivo JSON (cod_cierre) parece no tener corchetes de lista. Intentando envolverlo automáticamente.")
+                file_content = f"[{file_content}]"
+
+            all_rows = json.loads(file_content)
+            
+            # VALIDACIÓN ESTRUCTURA JSON
+            if not isinstance(all_rows, list):
+                messages.error(request, 'El archivo JSON debe contener una lista de objetos ( [...] ).')
+                return render(request, 'gestion/carga_masiva_cod_cierre.html')
+
             total_records_in_file = len(all_rows)
             logger.info(
                 f"Se leyeron {total_records_in_file} objetos del archivo JSON.")
@@ -253,6 +267,8 @@ def carga_masiva_cod_cierre_view(request):
             # Pre-validación de 'idCodCierre' duplicados en el archivo
             seen_ids, duplicates_found = set(), []
             for line, row in enumerate(all_rows, 1):
+                if not isinstance(row, dict):
+                    continue
                 pk_id = get_clean_value(row, 'idCodCierre')
                 if pk_id:
                     if pk_id in seen_ids:
@@ -271,6 +287,9 @@ def carga_masiva_cod_cierre_view(request):
             app_cache = {str(app.id): app for app in Aplicacion.objects.all()}
 
             for line_number, row in enumerate(all_rows, 1):
+                if not isinstance(row, dict):
+                    failed_rows.append({'line': line_number, 'row_data': str(row), 'error': 'El registro no es un objeto JSON válido (diccionario).'})
+                    continue
                 try:
                     cod_cierre = get_clean_value(row, 'cod_cierre')
                     id_aplicacion = get_clean_value(row, 'id_aplicacion')
@@ -347,6 +366,11 @@ def carga_masiva_cod_cierre_view(request):
                 }
             }
             return render(request, 'gestion/carga_masiva_cod_cierre.html', context)
+
+        except json.JSONDecodeError as e:
+            logger.warning(f"Error de formato JSON en carga (cod_cierre) por '{request.user}': {e}")
+            messages.error(request, f"El archivo no tiene un formato JSON válido. Error: {e}")
+            return render(request, 'gestion/carga_masiva_cod_cierre.html')
 
         except Exception as e:
             logger.critical(
