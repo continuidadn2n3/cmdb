@@ -114,3 +114,34 @@ docker-compose -f docker-compose.prod.yml exec web python manage.py cargar_datos
 
 ### 6. Verificación de Salud
 Visita `http://<IP_SERVIDOR>/health/` para confirmar que el sistema y la BD responden.
+
+---
+
+## Guía de Actualización (Post-Despliegue)
+
+Para aplicar cambios nuevos a una instalación existente (por ejemplo, después de un `git push`):
+
+1.  **Navega a la carpeta en el servidor**:
+    ```bash
+    cd /opt/cmdb/evo_cmdb  # (Ajusta la ruta según corresponda)
+    ```
+
+2.  **Descarga los últimos cambios**:
+    ```bash
+    git pull origin main
+    ```
+
+3.  **Reconstruye los contenedores (Sin tiempo de inactividad)**:
+    ```bash
+    docker-compose -f docker-compose.prod.yml up -d --build
+    ```
+
+4.  **Aplica migraciones si es necesario**:
+    ```bash
+    docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+    ```
+
+5.  **Actualiza archivos estáticos**:
+    ```bash
+    docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
+    ```
