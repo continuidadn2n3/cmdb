@@ -67,3 +67,50 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 La aplicación estará disponible en `http://127.0.0.1:8000`.
+
+---
+
+## Guía de Despliegue en Producción (Docker)
+
+Esta aplicación está contenerizada y lista para desplegarse en servidores Linux (ej: Rocky Linux 8.10).
+
+### 1. Prerrequisitos en el Servidor
+- **Docker** y **Docker Compose** instalados.
+- Acceso al puerto **80** (o el configurado en Nginx) y **3306** (MySQL).
+
+### 2. Configuración
+1.  Clona el repositorio en el servidor.
+2.  Crea el archivo `.env` de producción (puedes basarte en `env_production`).
+3.  Asegúrate de configurar `DEBUG=False` y establecer claves seguras.
+
+### 3. Estructura de Directorios
+El `docker-compose.prod.yml` espera la siguiente estructura para persistencia:
+```bash
+mkdir -p /opt/cmdb/mysql
+mkdir -p /opt/cmdb/docker/staticfiles
+mkdir -p /opt/cmdb/docker/media
+```
+
+### 4. Ejecución del Contenedor
+```bash
+# Construir y levantar servicios
+docker-compose -f docker-compose.prod.yml up -d --build
+
+# Verificar estado
+docker-compose -f docker-compose.prod.yml ps
+```
+
+### 5. Comandos Post-Despliegue
+```bash
+# Migraciones de BD
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+
+# Archivos estáticos
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
+
+# Carga inicial (si es BD nueva)
+docker-compose -f docker-compose.prod.yml exec web python manage.py cargar_datos_iniciales
+```
+
+### 6. Verificación de Salud
+Visita `http://<IP_SERVIDOR>/health/` para confirmar que el sistema y la BD responden.

@@ -78,3 +78,11 @@ create_superuser.py
 
 # Archivos de Agente AI
 .agent/
+.gemini/
+
+# Datos y Archivos Temporales
+*.xlsx
+*.csv
+*.json
+inspect_*.py
+temp_*.py

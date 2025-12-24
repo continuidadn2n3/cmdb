@@ -452,10 +452,10 @@ def carga_masiva_incidencia_view(request):
         return redirect('gestion:carga_masiva_incidencia')
 
     if request.method == 'POST':
-        file = request.FILES.get('csv_file')
-        if not file or not (file.name.endswith('.csv') or file.name.endswith('.xlsx')):
+        file = request.FILES.get('archivo')
+        if not file or not (file.name.endswith('.csv') or file.name.endswith('.xlsx') or file.name.endswith('.json')):
             messages.error(
-                request, 'Por favor, selecciona un archivo con formato .csv o .xlsx.')
+                request, 'Por favor, selecciona un archivo con formato .csv, .xlsx o .json.')
             return redirect('gestion:carga_masiva_incidencia')
 
         # <<<--- PASO 1: AJUSTAR CONTADORES ---<<<
@@ -621,22 +621,65 @@ def carga_masiva_incidencia_view(request):
                         elif cluster_val: cluster_obj = cluster_cache.get(normalize_text(cluster_val))
 
                         # 6. Bloque (id_bloque)
-                        bloque_val = get_val('bloque_id') or get_val('id_bloque')
-                        # ... lógica especial INDRA ...
-                        # Simplificación para JSON con ID directo:
+                        # 6. Bloque (Custom Mapping Logic)
+                        raw_bloque = get_val('bloque_id') or get_val('id_bloque')
+                        if not raw_bloque:
+                            # Fallback a 'demanadas' (con typo en excel) si bloque_id está vacío
+                            raw_bloque = get_val('demanadas') or get_val('demandas') or ''
+                        
+                        mapa_bloques = {
+                            'INDRA_B3': 'BLOQUE 3',
+                            'INDRA': 'BLOQUE 4',
+                            'INDRA_A': 'BLOQUE 4',
+                            'INDRA_D': 'BLOQUE 4'
+                        }
+                        
+                        nombre_bloque_destino = mapa_bloques.get(raw_bloque, raw_bloque) # Si no está en mapa, usa el valor original
+                        
                         bloque_obj = None
-                        if bloque_val and bloque_val.isdigit():
-                            bloque_obj = Bloque.objects.filter(id=int(bloque_val)).first()
-                        elif bloque_val:
-                             bloque_val_norm = normalize_text(bloque_val)
-                             # (Mantener lógica legacy de indra_d strings si viene texto)
-                             bloque_obj = bloque_cache.get(bloque_val_norm)
+                        if nombre_bloque_destino:
+                            # 1. Intenta por ID si es numérico
+                            if isinstance(nombre_bloque_destino, str) and nombre_bloque_destino.isdigit():
+                                bloque_obj = Bloque.objects.filter(id=int(nombre_bloque_destino)).first()
+                            else:
+                                # 2. Intenta por nombre en caché
+                                bloque_obj = bloque_cache.get(normalize_text(nombre_bloque_destino))
+                        
+                        if not bloque_obj:
+                            # 3. Default: Sin bloque
+                            bloque_obj = bloque_cache.get(normalize_text('Sin bloque'))
 
-                        # ... Lógica grupo resolutor (id_grupo_resolutor) ...
-                        gr_val = get_val('grupo_resolutor_id') or get_val('id_grupo_resolutor')
+                        # ... Lógica grupo resolutor (Custom Mapping Logic)
+                        # Regla 1: Si id_grupo_resolutor es explícitamente "INDRA N2", tiene prioridad absoluta.
+                        val_gr_excel = get_val('grupo_resolutor_id') or get_val('id_grupo_resolutor')
+                        
+                        nombre_grupo_destino = None
+
+                        if val_gr_excel and val_gr_excel.strip().upper() == 'INDRA N2':
+                             nombre_grupo_destino = 'INDRA N2'
+                        else:
+                            # Regla 2: Revisar bloque_id primero, luego grupo_resolutor_id
+                            raw_gr = get_val('bloque_id') or get_val('id_bloque')
+                            if not raw_gr:
+                                raw_gr = val_gr_excel # Fallback a lo que viniera en GR
+                            
+                            mapa_grupos = {
+                                'INDRA_B3': 'SWF_INDRA_3B',
+                                'INDRA': 'SWF_INDRA_G3',
+                                'INDRA_A': 'SWF_INDRA_G3',
+                                'INDRA_D': 'INDRA_D'
+                            }
+                            
+                            nombre_grupo_destino = mapa_grupos.get(raw_gr, raw_gr)
+
                         grupo_resolutor_obj = None
-                        if gr_val and gr_val.isdigit(): grupo_resolutor_obj = GrupoResolutor.objects.filter(id=int(gr_val)).first()
-                        elif gr_val: grupo_resolutor_obj = grupo_resolutor_cache.get(normalize_text(gr_val))
+                        if nombre_grupo_destino:
+                            # 1. Intenta por ID
+                            if isinstance(nombre_grupo_destino, str) and nombre_grupo_destino.isdigit():
+                                grupo_resolutor_obj = GrupoResolutor.objects.filter(id=int(nombre_grupo_destino)).first()
+                            else:
+                                # 2. Intenta por nombre
+                                grupo_resolutor_obj = grupo_resolutor_cache.get(normalize_text(nombre_grupo_destino))
 
                         # ... Lógica impacto, interfaz ...
                         
@@ -661,6 +704,7 @@ def carga_masiva_incidencia_view(request):
                         ua_val = get_val('usuario_asignado_id') or get_val('usuario_asignado')
                         usuario_asignado_obj = None
                         if ua_val and ua_val.isdigit(): usuario_asignado_obj = Usuario.objects.filter(id=int(ua_val)).first()
+                        elif ua_val: usuario_asignado_obj = usuario_cache.get(normalize_text(ua_val))
                         
                         # RE-MAPEO para consistencia con código original que usa variables
                         # Sobreescribimos las variables que el código original usaba abajo
@@ -687,8 +731,12 @@ def carga_masiva_incidencia_view(request):
                                 existing_incidence.estado = estado_obj
                                 if fecha_resolucion:
                                     existing_incidence.fecha_ultima_resolucion = fecha_resolucion
+                                # NUEVO: Actualizar usuario asignado si viene en el archivo
+                                if usuario_asignado_obj:
+                                    existing_incidence.usuario_asignado = usuario_asignado_obj
+                                
                                 existing_incidence.save(
-                                    update_fields=['estado', 'fecha_ultima_resolucion'])
+                                    update_fields=['estado', 'fecha_ultima_resolucion', 'usuario_asignado'])
                                 updated_count += 1
                                 logger.info(
                                     f"Línea {line_number}: INCIDENCIA ACTUALIZADA {incidencia_id} (ID: {existing_incidence.id}, Estado: '{old_state_desc}' -> '{estado_obj.desc_estado}').")
@@ -1053,7 +1101,16 @@ def carga_masiva_inicial_view(request):
                 cod_cierre_val = row_data.get('cod_cierre')
                 if cod_cierre_val is not None and str(cod_cierre_val).lower() != 'null' and str(cod_cierre_val).strip() != '':
                      if aplicacion_obj:
-                         codigo_cierre_obj = codigo_cierre_cache.get((cod_cierre_val, aplicacion_obj.id))
+                         # Corrección Robusta: Casting a str + strip explícito
+                         c_val_str = str(cod_cierre_val).strip()
+                         codigo_cierre_obj = codigo_cierre_cache.get((c_val_str, aplicacion_obj.id))
+                         
+                         if not codigo_cierre_obj:
+                             # Debug log para entender por qué falla
+                             logger.warning(
+                                 f"DEBUG CIERRE: No se encontró código '{c_val_str}' para App ID {aplicacion_obj.id}. "
+                                 f"Clave buscada: { (c_val_str, aplicacion_obj.id) }."
+                             )
                      # Nota: Si no hay app, difícil encontrar cod cierre por tupla (cod, app_id).
                      # Podríamos buscar solo por cod_cierre si fuera único, pero el cache usa tupla.
                      # Si aplicacion es None, codigo_cierre será None.

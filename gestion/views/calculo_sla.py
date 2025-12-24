@@ -415,18 +415,19 @@ def exportar_sla_csv_view(request):
             incidencia__icontains=filtro_incidencia)
     if filtro_fecha_desde := request.GET.get('fecha_desde'):
         try:
-            fecha_aware = timezone.make_aware(
-                datetime.strptime(filtro_fecha_desde, '%Y-%m-%d'))
+            # Corrección: USE_TZ=False, usamos naive datetime directamente
+            fecha_naive = datetime.strptime(filtro_fecha_desde, '%Y-%m-%d')
             incidencias_qs = incidencias_qs.filter(
-                fecha_ultima_resolucion__gte=fecha_aware)
+                fecha_ultima_resolucion__gte=fecha_naive)
         except (ValueError, TypeError):
             pass
     if filtro_fecha_hasta := request.GET.get('fecha_hasta'):
         try:
-            fecha_aware = timezone.make_aware(datetime.strptime(
-                filtro_fecha_hasta, '%Y-%m-%d') + timedelta(days=1))
+            # Corrección: USE_TZ=False, usamos naive datetime directamente
+            fecha_naive = datetime.strptime(
+                filtro_fecha_hasta, '%Y-%m-%d') + timedelta(days=1)
             incidencias_qs = incidencias_qs.filter(
-                fecha_ultima_resolucion__lt=fecha_aware)
+                fecha_ultima_resolucion__lt=fecha_naive)
         except (ValueError, TypeError):
             pass
 

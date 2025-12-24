@@ -173,7 +173,7 @@ def carga_masiva_view(request):
     if request.method == 'POST':
         logger.info(
             f"Usuario '{request.user}' ha iniciado una carga masiva de aplicaciones.")
-        json_file = request.FILES.get('json_file')
+        json_file = request.FILES.get('archivo')
         context = {}
 
         if not json_file or not json_file.name.endswith('.json'):

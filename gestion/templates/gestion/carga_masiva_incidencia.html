@@ -36,8 +36,8 @@
         <form method="post" enctype="multipart/form-data" action="{% url 'gestion:carga_masiva_incidencia' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="csv_file">Archivo CSV o XLSX</label>
-                <input type="file" name="file" class="form-control"
+                <label for="archivo">Archivo CSV, XLSX o JSON</label>
+                <input type="file" name="archivo" class="form-control"
                     accept=".csv, .xlsx, .json, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     required>
             </div>
