@@ -94,22 +94,22 @@ mkdir -p /opt/cmdb/docker/media
 ### 4. Ejecución del Contenedor
 ```bash
 # Construir y levantar servicios
-docker-compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 
 # Verificar estado
-docker-compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml ps
 ```
 
 ### 5. Comandos Post-Despliegue
 ```bash
 # Migraciones de BD
-docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate
 
 # Archivos estáticos
-docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
+docker compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
 
 # Carga inicial (si es BD nueva)
-docker-compose -f docker-compose.prod.yml exec web python manage.py cargar_datos_iniciales
+docker compose -f docker-compose.prod.yml exec web python manage.py cargar_datos_iniciales
 ```
 
 ### 6. Verificación de Salud
@@ -133,15 +133,15 @@ Para aplicar cambios nuevos a una instalación existente (por ejemplo, después 
 
 3.  **Reconstruye los contenedores (Sin tiempo de inactividad)**:
     ```bash
-    docker-compose -f docker-compose.prod.yml up -d --build
+    docker compose -f docker-compose.prod.yml up -d --build
     ```
 
 4.  **Aplica migraciones si es necesario**:
     ```bash
-    docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+    docker compose -f docker-compose.prod.yml exec web python manage.py migrate
     ```
 
 5.  **Actualiza archivos estáticos**:
     ```bash
-    docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
+    docker compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
     ```
