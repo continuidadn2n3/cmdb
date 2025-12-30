@@ -141,7 +141,30 @@ Para aplicar cambios nuevos a una instalación existente (por ejemplo, después 
     docker compose -f docker-compose.prod.yml exec web python manage.py migrate
     ```
 
-5.  **Actualiza archivos estáticos**:
-    ```bash
     docker compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
     ```
+
+---
+
+## Operación y Monitoreo
+
+Comandos útiles para el día a día en el servidor:
+
+### Ver Estado de los Contenedores
+Para confirmar si están "Arriba" (Up) o si hubo algún reinicio:
+```bash
+docker compose -f docker-compose.prod.yml ps
+```
+
+### Ver Logs en Tiempo Real
+Para ver qué está pasando dentro de la aplicación (errores, solicitudes, etc.):
+```bash
+# Logs de la aplicación (Django/Gunicorn) - Presiona Ctrl+C para salir
+docker compose -f docker-compose.prod.yml logs -f web
+
+# Logs del servidor web (Nginx)
+docker compose -f docker-compose.prod.yml logs -f nginx
+
+# Logs de la base de datos
+docker compose -f docker-compose.prod.yml logs -f db
+```
