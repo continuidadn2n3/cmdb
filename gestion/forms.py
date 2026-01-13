@@ -2,7 +2,20 @@ from django import forms
 from datetime import timedelta
 from .models import Aplicacion, ReglaSLA, HorarioLaboral, Usuario, Estado, GrupoResolutor, DiaFeriado, Incidencia, Severidad, Impacto, Interfaz, Cluster, Bloque, CodigoCierre
 
+class AplicacionChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.nombre_aplicacion
+
+
 class IncidenciaForm(forms.ModelForm):
+    # Personalizamos el campo aplicacion
+    aplicacion = AplicacionChoiceField(
+        queryset=Aplicacion.objects.order_by('nombre_aplicacion'),
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'aplicacion'}),
+        required=False, # Mantenemos coherencia con el modelo (null=True)
+        empty_label="Seleccione..."
+    )
+
     class Meta:
         model = Incidencia
         fields = '__all__'
@@ -36,6 +49,12 @@ class IncidenciaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields['incidencia'].widget.attrs['readonly'] = 'readonly'
+            
+            # Formatear fechas para input datetime-local (YYYY-MM-DDTHH:MM)
+            if self.instance.fecha_apertura:
+                self.initial['fecha_apertura'] = self.instance.fecha_apertura.strftime('%Y-%m-%dT%H:%M')
+            if self.instance.fecha_ultima_resolucion:
+                self.initial['fecha_ultima_resolucion'] = self.instance.fecha_ultima_resolucion.strftime('%Y-%m-%dT%H:%M')
 
 
 class UsuarioForm(forms.ModelForm):

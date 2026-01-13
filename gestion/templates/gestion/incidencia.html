@@ -152,6 +152,10 @@
             class="btn btn-info filter-btn link-con-spinner">Ver Mes Actual</a>
         <a href="{% url 'gestion:incidencias' %}?ver_todos=1" class="btn btn-secondary filter-btn link-con-spinner">Ver
             Todos</a>
+        {# Botón solicitado para ocultar INDRA D (Mantiene filtros actuales via JS) #}
+        <button type="button" id="btn-ocultar-indra-d" class="btn btn-warning filter-btn link-con-spinner">
+            Ocultar INDRA D
+        </button>
         <button id="btn-asignar-sla" class="btn btn-report filter-btn">Calcular SLA</button>
     </div>
 

@@ -34,6 +34,7 @@ Registrar Incidencia
         action="{% if incidencia %}{% url 'gestion:editar_incidencia' incidencia.id %}{% else %}{% url 'gestion:registrar_incidencia' %}{% endif %}"
         class="registration-form-layout" autocomplete="off">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next_url }}">
 
         {% if form.errors %}
         <div class="alert alert-danger">

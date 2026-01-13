@@ -256,6 +256,11 @@ def editar_incidencia_view(request, pk):
             try:
                 form.save()
                 messages.success(request, f'¡La incidencia "{incidencia.incidencia}" ha sido actualizada con éxito!')
+                
+                # Redirección inteligente: volver al filtro anterior si existe
+                next_url = request.POST.get('next')
+                if next_url:
+                    return redirect(next_url)
                 return redirect('gestion:incidencias')
             except Exception as e:
                 logger.error(f"Error al editar incidencia '{incidencia.id}': {e}", exc_info=True)
@@ -282,6 +287,8 @@ def editar_incidencia_view(request, pk):
         'bloques': Bloque.objects.all(),
         'usuarios': Usuario.objects.all().order_by('nombre'),
         'codigos_cierre': codigos_cierre_app,
+        # Capturamos la URL anterior (referer) para volver a ella tras guardar
+        'next_url': request.POST.get('next') or request.META.get('HTTP_REFERER') or ''
     }
     return render(request, 'gestion/registrar_incidencia.html', context)
 

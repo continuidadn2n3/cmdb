@@ -57,7 +57,7 @@ function formatSlaToHHMMSS(slaString) {
     return slaString; // Devuelve el original si el formato no es el esperado
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     // --- OBTENER VARIABLES DESDE EL HTML ---
     // Obtenemos las URLs y datos dinámicos desde los atributos data-* del contenedor principal.
     const pageContainer = document.querySelector('.page-container');
@@ -113,10 +113,10 @@ $(document).ready(function() {
             { "width": "14%", "targets": [12, 13] }
 
         ],
-        "initComplete": function(settings, json) {
+        "initComplete": function (settings, json) {
             $('#tabla-incidencias').removeClass('data-table-loading');
         },
-        "drawCallback": function(settings) {
+        "drawCallback": function (settings) {
             var api = this.api();
             var filteredCount = api.page.info().recordsDisplay;
 
@@ -128,7 +128,7 @@ $(document).ready(function() {
             // 2. Lo insertamos en nuestro contenedor personalizado de arriba
             $('.custom-counters').html(countersHTML);
 
-            $('.celda-tiempo-sla', api.table().body()).each(function() {
+            $('.celda-tiempo-sla', api.table().body()).each(function () {
                 var originalText = $(this).text().trim();
                 $(this).text(formatSlaToHHMMSS(originalText));
             });
@@ -138,13 +138,13 @@ $(document).ready(function() {
     // --- MANEJADORES DE EVENTOS ---
 
     // Botón para mostrar/ocultar filtros
-    $('#toggle-filters-btn').on('click', function(event) {
+    $('#toggle-filters-btn').on('click', function (event) {
         var filterContainer = $('#filter-container');
         if (filterContainer.is(':visible')) {
             filterContainer.slideUp();
             $(this).text('Mostrar Filtros');
         } else {
-            filterContainer.slideDown(function() {
+            filterContainer.slideDown(function () {
                 // Al mostrar los filtros, también ajustamos las columnas
                 table.columns.adjust().draw();
             });
@@ -153,7 +153,7 @@ $(document).ready(function() {
     });
 
     // Botón para limpiar filtros sin recargar la página
-    $('#limpiar-filtros-btn').on('click', function() {
+    $('#limpiar-filtros-btn').on('click', function () {
         const form = $(this).closest('form');
         form.find('input[type="text"], input[type="date"]').val('');
         form.find('select').prop('selectedIndex', 0);
@@ -162,14 +162,14 @@ $(document).ready(function() {
     });
 
     // Checkbox "Seleccionar Todo"
-    $('#select-all-checkbox').on('click', function() {
+    $('#select-all-checkbox').on('click', function () {
         $('.incidencia-checkbox').prop('checked', this.checked);
     });
 
     // Botón "Calcular SLA"
-    $('#btn-asignar-sla').on('click', function() {
+    $('#btn-asignar-sla').on('click', function () {
         var selected_ids = [];
-        $('.incidencia-checkbox:checked').each(function() {
+        $('.incidencia-checkbox:checked').each(function () {
             selected_ids.push($(this).val());
         });
 
@@ -183,20 +183,20 @@ $(document).ready(function() {
         const csrftoken = getCookie('csrftoken'); // Usamos la función de ayuda
 
         fetch(urls.calcularSla, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({
-                    'incidencia_ids': selected_ids
-                })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                'incidencia_ids': selected_ids
             })
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
                     alert(data.message);
-                    data.results.forEach(function(result) {
+                    data.results.forEach(function (result) {
                         var fila = $('tr[data-incidencia-id="' + result.id + '"]');
                         fila.find('.celda-cumple-sla').text(result.cumple_sla);
                         fila.find('.celda-tiempo-sla').text(formatSlaToHHMMSS(result.tiempo_sla));
@@ -214,7 +214,7 @@ $(document).ready(function() {
     });
 
     // Botón para exportar SLA a CSV
-    $('#btn-exportar-csv').on('click', function() {
+    $('#btn-exportar-csv').on('click', function () {
         var incidencia = $('#incidencia').val();
         var fechaDesde = $('#fecha_desde').val();
         var fechaHasta = $('#fecha_hasta').val();
@@ -227,7 +227,7 @@ $(document).ready(function() {
     });
 
     // Botón para exportar reporte a Excel
-    $('#btn-exportar-reporte').on('click', function() {
+    $('#btn-exportar-reporte').on('click', function () {
         var incidencia = $('#incidencia').val();
         var aplicativo = $('#aplicativo').val();
         var bloque = $('#bloque').val();
@@ -247,11 +247,22 @@ $(document).ready(function() {
 
     // --- CÓDIGO NUEVO PARA AJUSTAR COLUMNAS AL REDIMENSIONAR ---
     let resizeTimer;
-    $(window).on('resize', function() {
+    $(window).on('resize', function () {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
+        resizeTimer = setTimeout(function () {
             console.log('Ajustando columnas de la tabla...');
             table.columns.adjust();
         }, 250); // Espera 250ms después de que se deja de cambiar el tamaño
+    });
+
+    // Botón para Ocultar INDRA D (Inteligente: usa el formulario existente)
+    $('#btn-ocultar-indra-d').on('click', function () {
+        // 1. Cambiamos el valor del desplegable
+        var grupoSelect = $('#grupo_resolutor');
+        grupoSelect.val('exclude_indra_d');
+
+        // 2. Enviamos el formulario principal de filtros
+        // Esto mantendrá TODOS los otros filtros (fechas, apps, texto)
+        grupoSelect.closest('form').submit();
     });
 });
