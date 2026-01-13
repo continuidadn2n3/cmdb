@@ -173,7 +173,12 @@ class Incidencia(models.Model):
     )
     cumple_sla = models.CharField(
         max_length=50,
-        choices=[('Sí', 'Sí'), ('No', 'No'), ('N/A', 'No Aplica')],
+        choices=[
+            ('Sí', 'Sí'),
+            ('No', 'No'),
+            ('N/A', 'No Aplica'),
+            ('No Calculado (Faltan Datos)', 'No Calculado (Faltan Datos)')
+        ],
         default='N/A',
         blank=True,
         null=True,
